@@ -28,19 +28,17 @@ export default function Bar() {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <AppBar position="fixed" elevation={0}>
-        <Container maxWidth="lg">
-          <Toolbar>
-            <Typography variant="body1" className={classes.title}>
-              <Link href="/">MICROSITE</Link>
-            </Typography>
-            <Button color="inherit" component={Link} href="/about">
-              About
-            </Button>
-          </Toolbar>
-        </Container>
-      </AppBar>
-    </div>
+    <AppBar position="fixed" elevation={0}>
+      <Container maxWidth="lg">
+        <Toolbar>
+          <Typography variant="body1" className={classes.title}>
+            <Link href="/">MICROSITE</Link>
+          </Typography>
+          <Button color="inherit" component={Link} href="/about">
+            About
+          </Button>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }

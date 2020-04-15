@@ -1,6 +1,4 @@
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { createHttpLink } from "apollo-link-http";
+import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import fetch from "isomorphic-unfetch";
 
 export default function createApolloClient(initialState, ctx) {

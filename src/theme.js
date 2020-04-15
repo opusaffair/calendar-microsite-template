@@ -9,10 +9,10 @@ const font2 = '"Roboto Condensed",sans-serif';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: grey[600],
+      main: "#42404d",
     },
     secondary: {
-      main: amber[800],
+      main: "#a26c1a",
     },
     error: {
       main: red.A400,
@@ -30,7 +30,8 @@ const theme = createMuiTheme({
     h4: { fontFamily: font1, fontSize: "2rem" },
     h5: { fontFamily: font1, fontSize: "1.8rem" },
     h6: { fontFamily: font1, fontSize: "1.5rem" },
-    body1: { fontFamily: font2, fontSize: "1rem", fontWeight: "bold" },
+    body1: { fontFamily: font2, fontSize: "1rem", fontWeight: 700 },
+    body2: { fontFamily: font2, fontSize: "1rem", fontWeight: 500 },
   },
 });
 
