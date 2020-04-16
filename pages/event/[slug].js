@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   // cardContent: { height: "100%" },
   // img: { width: "100%", height: "100%" },
   topRow: {
-    [theme.breakpoints.down("md")]: { flexDirection: "column-reverse" },
+    [theme.breakpoints.down("sm")]: { flexDirection: "column-reverse" },
   },
 }));
 
