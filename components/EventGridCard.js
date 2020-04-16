@@ -9,11 +9,11 @@ import { useState, useEffect } from "react";
 import CardContent from "@material-ui/core/CardContent";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import Link from "./Link";
-import { makeStyles, withTheme } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Chip from "@material-ui/core/Chip";
 import Loading from "./Loading";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   card: {
     backgroundColor: "#fff",
     wordBreak: "break-word",
@@ -33,8 +33,9 @@ const useStyles = makeStyles((theme) => ({
   img: { width: "100%" },
 }));
 
-const EventGridCard = ({ event, theme }) => {
+const EventGridCard = ({ event }) => {
   const classes = useStyles();
+  const theme = useTheme();
   return (
     <Card elevation={0} square className={classes.card}>
       <CardActionArea
@@ -113,4 +114,4 @@ const EventGridCard = ({ event, theme }) => {
   );
 };
 
-export default withTheme(EventGridCard);
+export default EventGridCard;

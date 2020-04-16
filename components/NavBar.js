@@ -34,9 +34,17 @@ export default function Bar() {
           <Typography variant="body1" className={classes.title}>
             <Link href="/">MICROSITE</Link>
           </Typography>
-          <Button color="inherit" component={Link} href="/about">
-            About
-          </Button>
+          <>
+            <Button color="inherit" component={Link} href="/upcoming">
+              Upcoming
+            </Button>
+            <Button color="inherit" component={Link} href="/past">
+              Past
+            </Button>
+            <Button color="inherit" component={Link} href="/about">
+              About
+            </Button>
+          </>
         </Toolbar>
       </Container>
     </AppBar>
