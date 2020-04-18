@@ -9,7 +9,6 @@ export default function createApolloClient(initialState, ctx) {
     credentials: "same-origin",
     fetch,
   });
-
   return new ApolloClient({
     ssrMode: Boolean(ctx),
     connectToDevTools: true,

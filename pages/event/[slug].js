@@ -56,7 +56,7 @@ function Event({ theme }) {
   const router = useRouter();
   const EVENT_DETAIL_QUERY = gql`
     query($slug: String) {
-      event: Event(slug: $slug) {
+      event: eventDetail(slug: $slug) {
         _id
         opus_id
         title
@@ -69,11 +69,14 @@ function Event({ theme }) {
       }
     }
   `;
-  const { slug } = router.query;
+  // const { slug } = router.query;
+  // const slug =
+  // "boston-opera-collaborative-longy-school-of-music-of-bard-college-opera-bites";
   const { loading, data, error } = useQuery(EVENT_DETAIL_QUERY, {
-    variables: { slug },
+    variables: { slug: router.query?.slug },
   });
-  const event = data && data.event[0];
+  const event = data && data.event;
+  if (error) console.log(error);
   return (
     <Layout>
       <Container
@@ -82,7 +85,6 @@ function Event({ theme }) {
       >
         <Container maxWidth="lg">
           {loading && <div>Loading</div>}
-          {error && <div>Error</div>}
           {!loading && event && (
             <div>
               {event.alert && event.alert != "none" && (

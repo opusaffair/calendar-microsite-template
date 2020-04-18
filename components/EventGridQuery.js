@@ -1,15 +1,8 @@
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
 import Button from "@material-ui/core/Button";
-import MuiAlert from "@material-ui/lab/Alert";
-import { useState, useEffect } from "react";
-import CardContent from "@material-ui/core/CardContent";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import Link from "./Link";
-import { useQuery, gql, NetworkStatus } from "@apollo/client";
+import { useState } from "react";
+import { useQuery, NetworkStatus } from "@apollo/client";
 import Loading from "./Loading";
 import EventGridCard from "./EventGridCard";
 
@@ -45,6 +38,19 @@ const EventGridQuery = ({ query, variables }) => {
       },
     });
   };
+
+  if (loading && !loadMoreEvents)
+    return (
+      <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
+        <Loading />
+      </Box>
+    );
+  if (error)
+    return (
+      <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
+        Error
+      </Box>
+    );
   return (
     <>
       {events && (
@@ -56,16 +62,6 @@ const EventGridQuery = ({ query, variables }) => {
           ))}
         </Grid>
       )}
-      {/* {loading && (
-        <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
-          <Loading />
-        </Box>
-      )} */}
-      {/* {error && (
-        <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
-          Error
-        </Box>
-      )} */}
       {events && events.length >= variables.first && more && (
         <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
           <Button

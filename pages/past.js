@@ -42,6 +42,17 @@ function Index() {
     <Layout>
       <Container>
         <Box my={2}>
+          <div
+            style={{
+              borderBottom: "solid 3px",
+              marginBottom: 15,
+              fontSize: "1.2rem",
+              fontWeight: 700,
+              textTransform: "uppercase",
+            }}
+          >
+            Past Performances
+          </div>
           <EventGridQuery
             query={PAST_EVENTS_QUERY}
             variables={pastEventsQueryVars}
