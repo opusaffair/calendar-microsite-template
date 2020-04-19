@@ -8,6 +8,7 @@ import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import Link from "../../components/Link";
 import Layout from "../../components/Layout";
+import Loading from "../../components/Loading";
 import { useRouter } from "next/router";
 import { withApollo } from "../../utils/apollo";
 import { useQuery, gql } from "@apollo/client";
@@ -84,7 +85,18 @@ function Event({ theme }) {
         maxWidth={false}
       >
         <Container maxWidth="lg">
-          {loading && <div>Loading</div>}
+          {loading && (
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: 250,
+              }}
+            >
+              <Loading />
+            </Box>
+          )}
           {!loading && event && (
             <div>
               {event.alert && event.alert != "none" && (
@@ -127,6 +139,7 @@ function Event({ theme }) {
                         naked
                         disableElevation
                         href="/"
+                        rel="noreferrer"
                       >
                         Official Site
                       </Button>
@@ -134,7 +147,9 @@ function Event({ theme }) {
                   </Box>
                 </Grid>
                 <Grid item sm={12} md={7}>
-                  <Card style={{ height: "100%", display: "flex" }}>
+                  <Card
+                    style={{ height: "100%", display: "flex", border: "none" }}
+                  >
                     <EventPhoto
                       imageUrl={event.image_url}
                       theme={theme}
