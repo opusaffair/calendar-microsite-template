@@ -62,6 +62,11 @@ const EventGridQuery = ({ query, variables }) => {
           ))}
         </Grid>
       )}
+      {loading && (
+        <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
+          <Loading />
+        </Box>
+      )}
       {events && events.length >= variables.first && more && (
         <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
           <Button

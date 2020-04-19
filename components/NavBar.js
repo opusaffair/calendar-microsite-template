@@ -30,7 +30,7 @@ export default function Bar() {
   return (
     <AppBar position="fixed" elevation={0}>
       <Container maxWidth="lg">
-        <Toolbar>
+        <Toolbar disableGutters>
           <Typography variant="body1" className={classes.title}>
             <Link href="/">MICROSITE</Link>
           </Typography>
