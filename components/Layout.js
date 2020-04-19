@@ -4,22 +4,6 @@ import Container from "@material-ui/core/Container";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 
-// function Copyright() {
-//   return (
-//     <Typography variant="body2">
-//       {"Copyright © "}
-//       {new Date().getFullYear()}. Powered by{" "}
-//       <Link
-//         color="inherit"
-//         href="https://www.opusaffair.com/calendar/"
-//         target="_blank"
-//       >
-//         Opus Affair Event DB
-//       </Link>{" "}
-//     </Typography>
-//   );
-// }
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",

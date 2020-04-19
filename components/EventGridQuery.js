@@ -1,6 +1,7 @@
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import { useQuery, NetworkStatus } from "@apollo/client";
 import Loading from "./Loading";
@@ -8,6 +9,9 @@ import EventGridCard from "./EventGridCard";
 
 const EventGridQuery = ({ query, variables }) => {
   const [more, setMore] = useState(true);
+  const useStyles = makeStyles(() => ({
+    boxRow: { display: "flex", justifyContent: "center" },
+  }));
 
   const { loading, error, data, fetchMore, networkStatus } = useQuery(query, {
     variables,
@@ -17,6 +21,7 @@ const EventGridQuery = ({ query, variables }) => {
     notifyOnNetworkStatusChange: true,
   });
   const events = data && data.events;
+  const classes = useStyles();
 
   const loadingMoreEvents = networkStatus === NetworkStatus.fetchMore;
 
@@ -38,37 +43,27 @@ const EventGridQuery = ({ query, variables }) => {
       },
     });
   };
-
-  if (loading && !loadMoreEvents)
-    return (
-      <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
-        <Loading />
-      </Box>
-    );
-  if (error)
-    return (
-      <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
-        Error
-      </Box>
-    );
   return (
-    <>
+    <div suppressHydrationWarning={true}>
+      {error && <div>Error</div>}
       {events && (
-        <Grid container spacing={3}>
-          {events.map((event) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={event.opus_id}>
-              <EventGridCard event={event} />
-            </Grid>
-          ))}
-        </Grid>
+        <Box my={3} className={classes.boxRow}>
+          <Grid container spacing={3}>
+            {events.map((event) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={event.opus_id}>
+                <EventGridCard event={event} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       )}
       {loading && (
-        <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
+        <Box my={3} className={classes.boxRow} suppressHydrationWarning={true}>
           <Loading />
         </Box>
       )}
       {events && events.length >= variables.first && more && (
-        <Box my={3} style={{ display: "flex", justifyContent: "center" }}>
+        <Box my={3} className={classes.boxRow}>
           <Button
             onClick={() => loadMoreEvents()}
             disabled={loadingMoreEvents}
@@ -80,7 +75,7 @@ const EventGridQuery = ({ query, variables }) => {
           </Button>
         </Box>
       )}
-    </>
+    </div>
   );
 };
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { gql } from "@apollo/client";
 import moment from "moment";
 import { withApollo } from "../utils/apollo";
