@@ -20,11 +20,17 @@ export const ALL_EVENTS_QUERY = gql`
       _id
       opus_id
       title
+      supertitle_creative
+
       slug
       image_url
       displayInstanceDaterange(withYear: true)
       organizerNames
       alert
+      Tag {
+        _id
+        name
+      }
     }
   }
 `;

@@ -13,7 +13,11 @@ import { useRouter } from "next/router";
 import { withApollo } from "../../utils/apollo";
 import { useQuery, gql } from "@apollo/client";
 import { makeStyles, withTheme } from "@material-ui/core/styles";
+import Chip from "@material-ui/core/Chip";
 import MuiAlert from "@material-ui/lab/Alert";
+import TagChip from "../../components/TagChip";
+
+const visibleTags = process.env.VISIBLE_TAGS || [];
 
 const useStyles = makeStyles((theme) => ({
   // card: {
@@ -25,7 +29,12 @@ const useStyles = makeStyles((theme) => ({
   topRow: {
     [theme.breakpoints.down("sm")]: { flexDirection: "column-reverse" },
   },
+  link: {
+    color: theme.palette.secondary.main,
+  },
 }));
+
+const VenueList = ({ venue }) => <div>{venue.name}</div>;
 
 const EventPhoto = ({ imageUrl, title, theme }) => (
   // <picture>
@@ -46,7 +55,7 @@ const EventPhoto = ({ imageUrl, title, theme }) => (
   // /> */}
   <img
     src={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_858,z_0.3/${imageUrl}`}
-    style={{ width: "100%", height: "100%" }}
+    style={{ width: "100%" }}
     alt={title}
   />
   // {/* </picture> */}
@@ -61,12 +70,31 @@ function Event({ theme }) {
         _id
         opus_id
         title
+        supertitle_creative
         alert
         slug
         image_url
+        photo_cred
         displayInstanceDaterange(withYear: true)
         organizerNames
         organizer_desc
+        ticket_link
+        Tag {
+          _id
+          name
+        }
+        Venue {
+          _id
+          name
+          address
+          city
+          state
+          zip_code
+          location {
+            latitude
+            longitude
+          }
+        }
       }
     }
   `;
@@ -84,7 +112,19 @@ function Event({ theme }) {
         style={{ backgroundColor: "white", width: "100%", padding: 15 }}
         maxWidth={false}
       >
-        <Container maxWidth="lg">
+        <Container>
+          {error && (
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: 250,
+              }}
+            >
+              Error
+            </Box>
+          )}
           {loading && (
             <Box
               style={{
@@ -113,33 +153,62 @@ function Event({ theme }) {
               <Grid container spacing={3} className={classes.topRow}>
                 <Grid item sm={12} md={5}>
                   <Box
-                    my={3}
+                    py={3}
                     style={{
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      justifyContent: "space-after",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <Typography variant="h4" component="h1" gutterBottom>
-                      {event.title}
-                    </Typography>
                     <div>
-                      <Typography variant="body1" component="h2">
+                      {event.supertitle_creative && (
+                        <Typography
+                          variant="body2"
+                          component="h3"
+                          style={{
+                            textTransform: "uppercase",
+                            fontSize: "1rem",
+                            fontWeight: 700,
+                          }}
+                          gutterBottom
+                        >
+                          {event.supertitle_creative}
+                        </Typography>
+                      )}
+                      <Typography variant="h4" component="h1" gutterBottom>
+                        {event.title}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography variant="body2" component="h2">
                         {event.displayInstanceDaterange}
                       </Typography>
-                      <Typography variant="body1" component="h2">
+                      <Typography variant="body2" component="h2">
                         Presented by: {event.organizerNames}
                       </Typography>
-
+                      {event.Venue && event.Venue.length > 0 && (
+                        <div style={{ display: "flex", flexGrow: 0 }}>
+                          {event.Venue.map((venue) => (
+                            <a
+                              href={`https://maps.google.com/?q=${venue.address}+${venue.city}+${venue.state}`}
+                              key={venue._id}
+                              target="_blank"
+                              className={classes.link}
+                            >
+                              <VenueList venue={venue} />
+                            </a>
+                          ))}
+                        </div>
+                      )}
                       <Button
                         variant="contained"
                         color="secondary"
-                        component={Link}
-                        naked
                         disableElevation
-                        href="/"
+                        href={event.ticket_link}
+                        target="_blank"
                         rel="noreferrer"
+                        style={{ marginTop: 15, borderRadius: 0 }}
                       >
                         Official Site
                       </Button>
@@ -148,7 +217,10 @@ function Event({ theme }) {
                 </Grid>
                 <Grid item sm={12} md={7}>
                   <Card
-                    style={{ height: "100%", display: "flex", border: "none" }}
+                    style={{
+                      display: "flex",
+                      border: "none",
+                    }}
                   >
                     <EventPhoto
                       imageUrl={event.image_url}
@@ -156,6 +228,17 @@ function Event({ theme }) {
                       title={event.title}
                     />
                   </Card>
+                  {event.photo_cred && (
+                    <span
+                      style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        paddingBottom: 0,
+                      }}
+                    >
+                      Photo credit: {event.photo_cred}
+                    </span>
+                  )}
                 </Grid>
               </Grid>
             </div>
@@ -163,16 +246,33 @@ function Event({ theme }) {
         </Container>
       </Container>
       {!loading && event && (
-        <Container>
-          <Grid container>
-            <Grid item>
-              <Typography
-                component="div"
-                variant="body2"
-                dangerouslySetInnerHTML={{ __html: event.organizer_desc }}
-              ></Typography>
-            </Grid>
-          </Grid>
+        <Container maxWidth="sm" style={{ paddingTop: 15 }}>
+          <div>
+            <Typography
+              component="div"
+              variant="body1"
+              style={{ fontWeight: 500 }}
+              dangerouslySetInnerHTML={{ __html: event.organizer_desc }}
+            ></Typography>
+            {event.Tag.filter((tag) => visibleTags.indexOf(tag.name) != -1).map(
+              (tag) => (
+                <TagChip tag={tag} key={tag._id} />
+              )
+            )}
+          </div>
+          <div
+            style={{
+              fontSize: "0.8rem",
+              marginTop: 70,
+            }}
+          >
+            <a
+              href={`https://www.opusaffair.com/events/${event.slug}`}
+              target="_blank"
+            >
+              Opus Affair event listing
+            </a>
+          </div>
         </Container>
       )}
     </Layout>

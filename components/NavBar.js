@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    fontWeight: 700,
     "& a": {
       color: "white",
     },
@@ -31,8 +32,10 @@ export default function Bar() {
     <AppBar position="fixed" elevation={0}>
       <Container maxWidth="lg">
         <Toolbar disableGutters>
-          <Typography variant="body1" className={classes.title}>
-            <Link href="/">MICROSITE</Link>
+          <Typography variant="body2" className={classes.title}>
+            <Link href="/" style={{ textTransform: "uppercase" }}>
+              {process.env.SITE_NAME || MICROSITE}
+            </Link>
           </Typography>
           <>
             <Button color="inherit" component={Link} href="/upcoming">

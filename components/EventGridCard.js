@@ -1,17 +1,15 @@
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
-import Button from "@material-ui/core/Button";
 import MuiAlert from "@material-ui/lab/Alert";
-import { useState, useEffect } from "react";
 import CardContent from "@material-ui/core/CardContent";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import Link from "./Link";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Chip from "@material-ui/core/Chip";
-import Loading from "./Loading";
+import TagChip from "../components/TagChip";
+
+const visibleTags = process.env.VISIBLE_TAGS || [];
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -42,7 +40,6 @@ const EventGridCard = ({ event }) => {
         component={Link}
         href={`/event/[slug]`}
         as={`/event/${event.slug}`}
-        // target={"_blank"}
         style={{
           height: "100%",
           display: "flex",
@@ -87,20 +84,36 @@ const EventGridCard = ({ event }) => {
             flexDirection: "column",
           }}
         >
-          {event.alert && event.alert != "none" && (
-            <MuiAlert
-              severity="error"
-              style={{
-                textTransform: "uppercase",
-                marginBottom: 15,
-              }}
-            >
-              {event.alert}
-            </MuiAlert>
-          )}
-          <Typography gutterBottom variant="h6" component="h2">
-            {event.title}
-          </Typography>
+          <div>
+            {event.alert && event.alert != "none" && (
+              <MuiAlert
+                severity="error"
+                style={{
+                  textTransform: "uppercase",
+                  marginBottom: 15,
+                }}
+              >
+                {event.alert}
+              </MuiAlert>
+            )}
+            {event.supertitle_creative && (
+              <Typography
+                variant="body2"
+                component="h3"
+                style={{
+                  textTransform: "uppercase",
+                  fontSize: "1rem",
+                  fontWeight: 700,
+                }}
+                gutterBottom
+              >
+                {event.supertitle_creative}
+              </Typography>
+            )}
+            <Typography gutterBottom variant="h6" component="h2">
+              {event.title}
+            </Typography>
+          </div>
           <div>
             <Typography variant="body2" color="textSecondary" component="p">
               {event.displayInstanceDaterange}
@@ -108,6 +121,11 @@ const EventGridCard = ({ event }) => {
             <Typography variant="body2" color="textSecondary" component="p">
               {event.organizerNames}
             </Typography>
+            {event.Tag.filter((tag) => visibleTags.indexOf(tag.name) != -1).map(
+              (tag) => (
+                <TagChip tag={tag} key={tag._id} />
+              )
+            )}
           </div>
         </CardContent>
       </CardActionArea>
