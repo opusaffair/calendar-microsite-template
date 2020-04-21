@@ -37,28 +37,34 @@ const useStyles = makeStyles((theme) => ({
 const VenueList = ({ venue }) => <div>{venue.name}</div>;
 
 const EventPhoto = ({ imageUrl, title, theme }) => (
-  // <picture>
-  // {/* <source
-  //   media={`(min-width: ${theme.breakpoints.values.lg}px)`}
-  //   sizes="100vw"
-  //   srcSet={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_680,z_0.3/${imageUrl}`}
+  // <img
+  //   src={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_858,z_0.3/${imageUrl}`}
+  //   style={{ width: "100%", height: "100%" }}
+  //   alt={title}
   // />
-  // <source
-  //   media={`(min-width: ${theme.breakpoints.values.md}px)`}
-  //   sizes="100vw"
-  //   srcSet={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_680,z_0.3/${imageUrl}`}
-  // />
-  // <source
-  //   media={`(min-width: ${theme.breakpoints.values.sm}px)`}
-  //   sizes="100vw"
-  //   srcSet={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_858,z_0.3/${imageUrl}`}
-  // /> */}
-  <img
-    src={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_858,z_0.3/${imageUrl}`}
-    style={{ width: "100%" }}
-    alt={title}
-  />
-  // {/* </picture> */}
+
+  <picture>
+    <source
+      media={`(min-width: ${theme.breakpoints.values.lg}px)`}
+      sizes="100vw"
+      srcSet={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_680,z_0.3/${imageUrl}`}
+    />
+    <source
+      media={`(min-width: ${theme.breakpoints.values.md}px)`}
+      sizes="100vw"
+      srcSet={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_680,z_0.3/${imageUrl}`}
+    />
+    <source
+      media={`(min-width: ${theme.breakpoints.values.sm}px)`}
+      sizes="100vw"
+      srcSet={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_858,z_0.3/${imageUrl}`}
+    />
+    <img
+      src={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_858,z_0.3/${imageUrl}`}
+      style={{ width: "100%", height: "100%" }}
+      alt={title}
+    />
+  </picture>
 );
 
 function Event({ theme }) {
@@ -155,10 +161,10 @@ function Event({ theme }) {
                   <Box
                     py={3}
                     style={{
-                      height: "100%",
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "space-between",
+                      height: "100%",
                     }}
                   >
                     <div>
