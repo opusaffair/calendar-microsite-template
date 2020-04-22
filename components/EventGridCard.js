@@ -1,6 +1,4 @@
-import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
 import Card from "@material-ui/core/Card";
 import MuiAlert from "@material-ui/lab/Alert";
 import CardContent from "@material-ui/core/CardContent";
@@ -114,11 +112,16 @@ const EventGridCard = ({ event }) => {
               {event.title}
             </Typography>
           </div>
-          <div>
+          <div style={{ paddingTop: 20 }}>
             <Typography variant="body2" color="textSecondary" component="p">
               {event.displayInstanceDaterange}
             </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              component="p"
+              style={{ paddingBottom: 15 }}
+            >
               {event.organizerNames}
             </Typography>
             {event.Tag.filter((tag) => visibleTags.indexOf(tag.name) != -1).map(

@@ -1,24 +1,10 @@
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  footer: {
-    fontSize: "0.8rem",
-    "& a": {
-      color: theme.palette.secondary.light,
-      "& :hover": {
-        textDecoration: "underline",
-      },
-    },
-  },
-}));
 
 export default function Footer() {
-  const classes = useStyles();
   return (
-    <Grid container className={classes.footer}>
+    <Grid container>
       <Grid
         item
         sm={12}
@@ -31,7 +17,6 @@ export default function Footer() {
             color="inherit"
             href="https://github.com/opusaffair/calendar-microsite-template"
             target="_blank"
-            className={classes.link}
           >
             codebase
           </Link>{" "}
@@ -40,7 +25,6 @@ export default function Footer() {
             color="inherit"
             href="https://www.opusaffair.com/calendar/"
             target="_blank"
-            className={classes.link}
           >
             Opus Affair Event API
           </Link>

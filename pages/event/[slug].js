@@ -37,13 +37,7 @@ const useStyles = makeStyles((theme) => ({
 const VenueList = ({ venue }) => <div>{venue.name}</div>;
 
 const EventPhoto = ({ imageUrl, title, theme }) => (
-  // <img
-  //   src={`https://res.cloudinary.com/opusaffair/image/fetch/c_fill,dpr_auto,f_auto,g_auto,ar_1.7,w_858,z_0.3/${imageUrl}`}
-  //   style={{ width: "100%", height: "100%" }}
-  //   alt={title}
-  // />
-
-  <picture>
+  <picture style={{ width: "100%" }}>
     <source
       media={`(min-width: ${theme.breakpoints.values.lg}px)`}
       sizes="100vw"
@@ -223,6 +217,7 @@ function Event({ theme }) {
                 </Grid>
                 <Grid item sm={12} md={7}>
                   <Card
+                    elevation={0}
                     style={{
                       display: "flex",
                       border: "none",
@@ -257,7 +252,7 @@ function Event({ theme }) {
             <Typography
               component="div"
               variant="body1"
-              style={{ fontWeight: 500 }}
+              style={{ fontWeight: 500, marginBottom: 15 }}
               dangerouslySetInnerHTML={{ __html: event.organizer_desc }}
             ></Typography>
             {event.Tag.filter((tag) => visibleTags.indexOf(tag.name) != -1).map(
@@ -275,6 +270,7 @@ function Event({ theme }) {
             <a
               href={`https://www.opusaffair.com/events/${event.slug}`}
               target="_blank"
+              className={classes.link}
             >
               Opus Affair event listing
             </a>

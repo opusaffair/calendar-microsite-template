@@ -16,10 +16,17 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   footer: {
+    fontSize: "0.8rem",
     padding: theme.spacing(3, 2),
     marginTop: "auto",
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
+    "& a": {
+      color: theme.palette.secondary.light,
+      "& :hover": {
+        textDecoration: "underline",
+      },
+    },
   },
 }));
 

@@ -9,9 +9,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Link from "./Link";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    // flexGrow: 1,
-  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
