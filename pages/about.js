@@ -11,18 +11,8 @@ function About() {
       <Container maxWidth="sm">
         <Box my={4}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Next.js example
+            About {process.env.SITE_NAME}
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            component={Link}
-            naked
-            disableElevation
-            href="/"
-          >
-            Go to the main page
-          </Button>
         </Box>
       </Container>
     </Layout>

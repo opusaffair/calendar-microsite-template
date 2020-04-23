@@ -17,6 +17,8 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.49",
     "add": "^2.0.6",
+    "axios": "^0.19.2",
+    "cloudinary-react": "^1.4.0",
     "clsx": "^1.1.0",
     "dotenv": "^8.2.0",
     "graphql": "^14.5.4",
@@ -26,6 +28,7 @@
     "prop-types": "^15.7.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "react-parallax": "^3.0.3",
     "yarn": "^1.22.4"
   }
 }
