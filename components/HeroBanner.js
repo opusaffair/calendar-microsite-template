@@ -58,6 +58,7 @@ const HeroBanner = ({ tagline }) => (
         height="300"
         crop="crop"
         gravity="auto:faces"
+        secure="true"
         suppressHydrationWarning={true}
       />
     </Background>
