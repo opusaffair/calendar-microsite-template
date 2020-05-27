@@ -21,6 +21,7 @@ export const ALL_EVENTS_QUERY = gql`
 const sitemapXML = (data) => {
   let latestPost = 0;
   let projectsXML = "";
+  const domain = process.env.SITE_DOMAIN;
 
   data.map((post) => {
     // console.log(post.last_modified);
@@ -29,7 +30,7 @@ const sitemapXML = (data) => {
       latestPost = postDate;
     }
 
-    const projectURL = `http://localhost:3000/event/${post.slug}/`;
+    const projectURL = `${domain}/event/${post.slug}/`;
     projectsXML += `
         <url>
           <loc>${projectURL}</loc>
@@ -41,12 +42,12 @@ const sitemapXML = (data) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
       <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
         <url>
-          <loc>https://domain.ltd/</loc>
+          <loc>${domain}</loc>
           <lastmod>${latestPost}</lastmod>
           <priority>1.00</priority>
         </url>
         <url>
-          <loc>https://domain.ltd/about/</loc>
+          <loc>${domain}/about/</loc>
           <priority>0.80</priority>
         </url>
         ${projectsXML}

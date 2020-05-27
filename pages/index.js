@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { gql } from "@apollo/client";
 import moment from "moment";
 import { withApollo } from "../utils/apollo";
@@ -6,35 +6,7 @@ import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import Layout from "../components/Layout";
 import EventGridQuery from "../components/EventGridQuery";
-import HeroBanner from "../components/HeroBanner";
-
-export const ALL_EVENTS_QUERY = gql`
-  query($first: Int, $offset: Int, $start: Float) {
-    events: Event(
-      first: $first
-      offset: $offset
-      filter: {
-        Tag_some: { AND: [{ name: "[Opera Alliance] Boston Opera Calendar" }] }
-        end_datetime_gte: $start
-      }
-      orderBy: [end_datetime_asc]
-    ) {
-      _id
-      opus_id
-      title
-      supertitle_creative
-      alert
-      slug
-      image_url
-      displayInstanceDaterange(withYear: true)
-      organizerNames
-      Tag {
-        _id
-        name
-      }
-    }
-  }
-`;
+import EventQueryFilter from "../components/EventQueryFilter";
 
 let defaultStart = parseFloat(moment().format("X"));
 
@@ -45,25 +17,81 @@ export const allEventsQueryVars = {
 };
 
 function Index() {
+  const [search, setSearch] = useState("");
+  const [tags, setTags] = useState([]);
+  const [startDate, setStart] = useState(moment());
+  const [endDate, setEnd] = useState(moment().add(30, "days"));
+  const [checkedOnline, setCheckedOnline] = useState(false);
+  const [checkedCanceled, setCheckedCanceled] = useState(false);
+  const tagQuery = tags.map(
+    (t) => `{
+    Tag_some: {
+      name_contains: "${t.name}",
+    },
+  }`
+  );
+  const ALL_EVENTS_QUERY = gql`
+    query($first: Int, $offset: Int, $start: Float, $end: Float) {
+      events: Event(
+        first: $first
+        offset: $offset
+        filter: {
+          AND: [
+            # {
+            #   Tag_some: {
+            #     name_contains: "[Opera Alliance] Boston Opera Calendar"
+            #   }
+            # }
+            ${checkedOnline ? `{ Tag_some: { name_contains: "Online" } }` : ``}
+            ${!checkedCanceled ? `{alert:"none"}` : ``}
+            ${tagQuery}
+          ]
+          end_datetime_gte: $start
+          start_datetime_lte: $end
+        }
+        orderBy: [end_datetime_asc]
+      ) {
+        _id
+        opus_id
+        title
+        supertitle_creative
+        slug
+        image_url
+        displayInstanceDaterange(withYear: true)
+        organizerNames
+        alert
+        Tag {
+          _id
+          name
+        }
+      }
+    }
+  `;
   return (
     <Layout>
-      <HeroBanner tagline={"Boston is an opera town"} />
       <Container>
         <Box my={2}>
-          <div
-            style={{
-              borderBottom: "solid 3px",
-              marginBottom: 15,
-              fontSize: "1.2rem",
-              fontWeight: 700,
-              textTransform: "uppercase",
-            }}
-          >
-            Upcoming Performances
-          </div>
+          <EventQueryFilter
+            search={search}
+            setSearch={setSearch}
+            startDate={startDate}
+            endDate={endDate}
+            setStart={setStart}
+            setEnd={setEnd}
+            checkedOnline={checkedOnline}
+            setCheckedOnline={setCheckedOnline}
+            checkedCanceled={checkedCanceled}
+            setCheckedCanceled={setCheckedCanceled}
+            tags={tags}
+            setTags={setTags}
+          />
           <EventGridQuery
             query={ALL_EVENTS_QUERY}
-            variables={allEventsQueryVars}
+            variables={{
+              ...allEventsQueryVars,
+              end: parseInt(endDate.format("X")),
+              start: parseInt(startDate.format("X")),
+            }}
           />
         </Box>
       </Container>

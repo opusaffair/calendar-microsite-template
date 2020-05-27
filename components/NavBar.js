@@ -36,6 +36,9 @@ export default function Bar() {
           </Typography>
           <>
             <Button color="inherit" component={Link} href="/">
+              Browse
+            </Button>
+            <Button color="inherit" component={Link} href="/upcoming">
               Upcoming
             </Button>
             <Button color="inherit" component={Link} href="/past">
