@@ -72,4 +72,4 @@ function Index() {
   );
 }
 
-export default withApollo({ ssr: true })(Index);
+export default withApollo({ ssr: false })(Index);

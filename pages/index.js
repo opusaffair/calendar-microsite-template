@@ -54,15 +54,14 @@ function Index() {
         offset: $offset
         filter: {
           AND: [
-            {published:true}
-            {end_datetime_gte: $start}
-            {start_datetime_lte: $end}
+            { published: true }
+            { end_datetime_gte: $start }
+            { start_datetime_lte: $end }
             ${siteTagString}
             ${onlineOnlyString}
             ${includeCanceledString}
             ${tagQuery}
           ]
-
         }
         orderBy: [end_datetime_asc]
       ) {
@@ -114,4 +113,4 @@ function Index() {
   );
 }
 
-export default withApollo({ ssr: true })(Index);
+export default withApollo({ ssr: false })(Index);
