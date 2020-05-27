@@ -30,6 +30,15 @@ function Index() {
     },
   }`
   );
+  const siteTag = process.env.SITE_TAG;
+  const siteTagString = siteTag
+    ? `{
+    Tag_some: {
+      name_contains: "${siteTag}",
+    },
+  }`
+    : ``;
+
   const ALL_EVENTS_QUERY = gql`
     query($first: Int, $offset: Int, $start: Float, $end: Float) {
       events: Event(
@@ -37,11 +46,7 @@ function Index() {
         offset: $offset
         filter: {
           AND: [
-            # {
-            #   Tag_some: {
-            #     name_contains: "[Opera Alliance] Boston Opera Calendar"
-            #   }
-            # }
+            ${siteTagString}
             ${checkedOnline ? `{ Tag_some: { name_contains: "Online" } }` : ``}
             ${!checkedCanceled ? `{alert:"none"}` : ``}
             ${tagQuery}

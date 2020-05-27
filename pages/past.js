@@ -5,15 +5,20 @@ import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import Layout from "../components/Layout";
 import EventGridQuery from "../components/EventGridQuery";
+const siteTag = process.env.SITE_TAG;
+const siteTagString = siteTag
+  ? `Tag_some: { AND: [{ name: "${siteTag}" }] }`
+  : ``;
+
+console.log(siteTag, siteTagString);
 
 export const PAST_EVENTS_QUERY = gql`
   query($first: Int, $offset: Int, $start: Float) {
     events: Event(
       first: $first
       offset: $offset
-      filter: {
-        Tag_some: { AND: [{ name: "[Opera Alliance] Boston Opera Calendar" }] }
-        end_datetime_lt: $start
+      filter: { end_datetime_lt: $start 
+      ${siteTagString}
       }
       orderBy: [end_datetime_desc]
     ) {

@@ -38,6 +38,7 @@ const EventGridCard = ({ event }) => {
         component={Link}
         href={`/event/[slug]`}
         as={`/event/${event.slug}`}
+        target="_blank"
         style={{
           height: "100%",
           display: "flex",
