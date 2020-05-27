@@ -83,6 +83,11 @@ const EventQueryFilter = ({
 
             <Grid item md={2} xs={12}>
               <FormGroup>
+                <style jsx>{`
+                  .filter-switch-label {
+                    font-size: 0.8rem;
+                  }
+                `}</style>
                 <FormControlLabel
                   control={
                     <Switch
@@ -92,6 +97,8 @@ const EventQueryFilter = ({
                     />
                   }
                   label="Online Only"
+                  classes={{ label: "filter-switch-label" }}
+                  style={{ marginBottom: 8 }}
                 />
                 <FormControlLabel
                   control={
@@ -102,6 +109,8 @@ const EventQueryFilter = ({
                     />
                   }
                   label="Include Canceled"
+                  classes={{ label: "filter-switch-label" }}
+                  style={{ marginBottom: 8 }}
                 />
               </FormGroup>
             </Grid>

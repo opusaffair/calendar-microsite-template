@@ -21,7 +21,7 @@ function Index() {
   const [tags, setTags] = useState([]);
   const [startDate, setStart] = useState(moment());
   const [endDate, setEnd] = useState(moment().add(30, "days"));
-  const [checkedOnline, setCheckedOnline] = useState(false);
+  const [checkedOnline, setCheckedOnline] = useState(true);
   const [checkedCanceled, setCheckedCanceled] = useState(false);
   const tagQuery = tags.map(
     (t) => `{

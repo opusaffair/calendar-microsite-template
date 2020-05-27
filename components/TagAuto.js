@@ -14,7 +14,7 @@ const filter = createFilterOptions();
 
 const TAG_QUERY = gql`
   query orgs {
-    Tag {
+    Tag(filter: { name_not_contains: "[" }) {
       name
       opus_id
     }

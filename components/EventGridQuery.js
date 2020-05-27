@@ -44,7 +44,6 @@ const EventGridQuery = ({ query, variables }) => {
     });
   };
   if (error) console.log(error);
-  console.log(data);
   return (
     <div suppressHydrationWarning={true}>
       {events && (
