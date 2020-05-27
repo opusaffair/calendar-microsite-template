@@ -10,8 +10,6 @@ const siteTagString = siteTag
   ? `Tag_some: { AND: [{ name: "${siteTag}" }] }`
   : ``;
 
-console.log(siteTag, siteTagString);
-
 export const PAST_EVENTS_QUERY = gql`
   query($first: Int, $offset: Int, $start: Float) {
     events: Event(
@@ -19,6 +17,7 @@ export const PAST_EVENTS_QUERY = gql`
       offset: $offset
       filter: { end_datetime_lt: $start 
       ${siteTagString}
+      published:true
       }
       orderBy: [end_datetime_desc]
     ) {
@@ -26,7 +25,6 @@ export const PAST_EVENTS_QUERY = gql`
       opus_id
       title
       supertitle_creative
-
       slug
       image_url
       displayInstanceDaterange(withYear: true)

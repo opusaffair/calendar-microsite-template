@@ -20,7 +20,9 @@ export const ALL_EVENTS_QUERY = gql`
       offset: $offset
       filter: {
         end_datetime_gte: $start
-        ${siteTagString}}
+        ${siteTagString}
+        published:true
+        }
       orderBy: [end_datetime_asc]
     ) {
       _id

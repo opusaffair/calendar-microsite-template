@@ -54,6 +54,7 @@ function Index() {
         offset: $offset
         filter: {
           AND: [
+            {published:true}
             {end_datetime_gte: $start}
             {start_datetime_lte: $end}
             ${siteTagString}
