@@ -55,7 +55,7 @@ function TagAuto({ setTags }) {
       <Autocomplete
         multiple
         limitTags={2}
-        style={{ width: 500 }}
+        // style={{ width: 500 }}
         value={value}
         open={open}
         onOpen={() => {

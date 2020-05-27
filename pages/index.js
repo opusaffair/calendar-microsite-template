@@ -32,11 +32,19 @@ function Index() {
   );
   const siteTag = process.env.SITE_TAG;
   const siteTagString = siteTag
-    ? `{
-    Tag_some: {
+    ? `{Tag_some: {
       name_contains: "${siteTag}",
-    },
-  }`
+    }}`
+    : ``;
+
+  const onlineOnlyString = checkedOnline
+    ? `{Tag_some: {
+      name_contains: "Online",
+    }}`
+    : ``;
+
+  const includeCanceledString = !checkedCanceled
+    ? `{alert_contains:"none"}`
     : ``;
 
   const ALL_EVENTS_QUERY = gql`
@@ -46,13 +54,14 @@ function Index() {
         offset: $offset
         filter: {
           AND: [
+            {end_datetime_gte: $start}
+            {start_datetime_lte: $end}
             ${siteTagString}
-            ${checkedOnline ? `{ Tag_some: { name_contains: "Online" } }` : ``}
-            ${!checkedCanceled ? `{alert:"none"}` : ``}
+            ${onlineOnlyString}
+            ${includeCanceledString}
             ${tagQuery}
           ]
-          end_datetime_gte: $start
-          start_datetime_lte: $end
+
         }
         orderBy: [end_datetime_asc]
       ) {

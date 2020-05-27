@@ -10,6 +10,7 @@ import {
   FormGroup,
   FormControlLabel,
   Switch,
+  Grid,
 } from "@material-ui/core";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client";
@@ -55,39 +56,56 @@ const EventQueryFilter = ({
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
         <LocalizationProvider dateAdapter={MomentUtils}>
-          <DatePicker
-            renderInput={(props) => <TextField {...props} label="Start Date" />}
-            value={startDate}
-            onChange={(date) => setStart(date)}
-          />
-          <DatePicker
-            renderInput={(props) => <TextField {...props} label="End Date" />}
-            value={endDate}
-            onChange={(date) => setEnd(date)}
-          />
-          <TagAuto tags={tags} setTags={setTags} />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  size="small"
-                  checked={checkedOnline}
-                  onChange={toggleCheckedOnline}
+          <Grid container spacing={3}>
+            <Grid item md={3} xs={12}>
+              <DatePicker
+                renderInput={(props) => (
+                  <TextField {...props} label="Start Date" />
+                )}
+                value={startDate}
+                onChange={(date) => setStart(date)}
+              />
+            </Grid>
+
+            <Grid item md={3} xs={12}>
+              <DatePicker
+                renderInput={(props) => (
+                  <TextField {...props} label="End Date" />
+                )}
+                value={endDate}
+                onChange={(date) => setEnd(date)}
+              />
+            </Grid>
+
+            <Grid item md={4} xs={12}>
+              <TagAuto tags={tags} setTags={setTags} />
+            </Grid>
+
+            <Grid item md={2} xs={12}>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      size="small"
+                      checked={checkedOnline}
+                      onChange={toggleCheckedOnline}
+                    />
+                  }
+                  label="Online Only"
                 />
-              }
-              label="Online Only"
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  size="small"
-                  checked={checkedCanceled}
-                  onChange={toggleCheckedCanceled}
+                <FormControlLabel
+                  control={
+                    <Switch
+                      size="small"
+                      checked={checkedCanceled}
+                      onChange={toggleCheckedCanceled}
+                    />
+                  }
+                  label="Include Canceled"
                 />
-              }
-              label="Include Canceled"
-            />
-          </FormGroup>
+              </FormGroup>
+            </Grid>
+          </Grid>
         </LocalizationProvider>
       </ExpansionPanelDetails>
     </ExpansionPanel>

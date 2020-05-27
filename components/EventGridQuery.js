@@ -43,9 +43,10 @@ const EventGridQuery = ({ query, variables }) => {
       },
     });
   };
+  if (error) console.log(error);
+  console.log(data);
   return (
     <div suppressHydrationWarning={true}>
-      {error && <div>Error</div>}
       {events && (
         <Box my={3} className={classes.boxRow}>
           <Grid container spacing={3}>
@@ -55,6 +56,11 @@ const EventGridQuery = ({ query, variables }) => {
               </Grid>
             ))}
           </Grid>
+        </Box>
+      )}
+      {events?.length === 0 && (
+        <Box my={3} className={classes.boxRow} style={{ alignItems: "center" }}>
+          No events found
         </Box>
       )}
       {loading && (
