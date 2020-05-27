@@ -17,7 +17,6 @@ export const allEventsQueryVars = {
 };
 
 function Index() {
-  const [search, setSearch] = useState("");
   const [tags, setTags] = useState([]);
   const [startDate, setStart] = useState(moment());
   const [endDate, setEnd] = useState(moment().add(30, "days"));
@@ -86,8 +85,6 @@ function Index() {
       <Container>
         <Box my={2}>
           <EventQueryFilter
-            search={search}
-            setSearch={setSearch}
             startDate={startDate}
             endDate={endDate}
             setStart={setStart}

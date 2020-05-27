@@ -12,8 +12,6 @@ import {
   Switch,
   Grid,
 } from "@material-ui/core";
-import { gql } from "@apollo/client";
-import { useQuery } from "@apollo/client";
 import MomentUtils from "@material-ui/pickers/adapter/moment";
 import moment from "moment";
 import { DatePicker, LocalizationProvider } from "@material-ui/pickers";
