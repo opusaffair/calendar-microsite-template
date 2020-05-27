@@ -19,6 +19,7 @@ export const allEventsQueryVars = {
 function Index() {
   const [tags, setTags] = useState([]);
   const [startDate, setStart] = useState(moment());
+  const [location, setLocation] = useState();
   const [endDate, setEnd] = useState(moment().add(30, "days"));
   const [checkedOnline, setCheckedOnline] = useState(true);
   const [checkedCanceled, setCheckedCanceled] = useState(false);
@@ -38,7 +39,7 @@ function Index() {
 
   const onlineOnlyString = checkedOnline
     ? `{Tag_some: {
-      name_contains: "Online",
+      category_contains: "Online",
     }}`
     : ``;
 
@@ -95,6 +96,8 @@ function Index() {
             setCheckedCanceled={setCheckedCanceled}
             tags={tags}
             setTags={setTags}
+            location={location}
+            setLocation={setLocation}
           />
           <EventGridQuery
             query={ALL_EVENTS_QUERY}

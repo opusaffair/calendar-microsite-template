@@ -14,9 +14,10 @@ const filter = createFilterOptions();
 
 const TAG_QUERY = gql`
   query orgs {
-    Tag(filter: { name_not_contains: "[" }) {
+    Tag(filter: { name_not_contains: "[" }, orderBy: category_asc) {
       name
       opus_id
+      category
     }
   }
 `;
@@ -71,6 +72,7 @@ function TagAuto({ setTags }) {
           }
           setValue(newValue);
         }}
+        groupBy={(option) => option.category}
         loading={loading}
         options={options}
         getOptionLabel={(option) => option.name}

@@ -4,9 +4,6 @@ import {
   ExpansionPanelSummary,
   Typography,
   TextField,
-  Checkbox,
-  ListItem,
-  ListItemText,
   FormGroup,
   FormControlLabel,
   Switch,
@@ -16,8 +13,10 @@ import MomentUtils from "@material-ui/pickers/adapter/moment";
 import moment from "moment";
 import { DatePicker, LocalizationProvider } from "@material-ui/pickers";
 import SortIcon from "@material-ui/icons/Sort";
+
 import { useState } from "react";
 import TagAuto from "./TagAuto";
+import GooglePlaces from "./GooglePlaces";
 const EventQueryFilter = ({
   startDate,
   setStart,
@@ -29,9 +28,12 @@ const EventQueryFilter = ({
   checkedOnline,
   tags,
   setTags,
+  location,
+  setLocation,
 }) => {
   const [open, setOpen] = useState(true);
-
+  const metersPerPx = (lat, zoom) =>
+    (156543.03392 * Math.cos((lat * Math.PI) / 180)) / Math.pow(2, zoom);
   const toggleCheckedOnline = () => {
     setCheckedOnline((prev) => !prev);
   };
@@ -58,7 +60,7 @@ const EventQueryFilter = ({
             <Grid item md={3} xs={12}>
               <DatePicker
                 renderInput={(props) => (
-                  <TextField {...props} label="Start Date" />
+                  <TextField {...props} helperText="" label="Start Date" />
                 )}
                 value={startDate}
                 onChange={(date) => setStart(date)}
@@ -68,7 +70,7 @@ const EventQueryFilter = ({
             <Grid item md={3} xs={12}>
               <DatePicker
                 renderInput={(props) => (
-                  <TextField {...props} label="End Date" />
+                  <TextField {...props} helperText="" label="End Date" />
                 )}
                 value={endDate}
                 onChange={(date) => setEnd(date)}
@@ -105,22 +107,18 @@ const EventQueryFilter = ({
                 />
               </FormGroup>
             </Grid>
+            <Grid item md={6} xs={12}>
+              <GooglePlaces
+                location={location}
+                setLocation={setLocation}
+                errorMessage={""}
+              />
+            </Grid>
           </Grid>
         </LocalizationProvider>
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );
 };
-
-const CheckBoxItem = ({ item }) => (
-  <ListItem
-    onClick={(e) => {
-      e.preventDefault();
-    }}
-  >
-    <Checkbox checked={item.isRefined} />
-    <ListItemText primary={item.label.replace(/\[.*] /, "")} />
-  </ListItem>
-);
 
 export default EventQueryFilter;

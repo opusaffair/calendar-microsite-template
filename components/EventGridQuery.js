@@ -3,29 +3,36 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
-import { useQuery, NetworkStatus } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import Loading from "./Loading";
 import EventGridCard from "./EventGridCard";
 
 const EventGridQuery = ({ query, variables }) => {
   const [more, setMore] = useState(true);
+  const [fetchingMore, setFetchingMore] = useState(false);
   const useStyles = makeStyles(() => ({
     boxRow: { display: "flex", justifyContent: "center" },
   }));
 
-  const { loading, error, data, fetchMore, networkStatus } = useQuery(query, {
+  const { loading, error, data, fetchMore } = useQuery(query, {
     variables,
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching
     // more data
     notifyOnNetworkStatusChange: true,
+    // fetchPolicy: "cache-first",
+    onCompleted: (data) => {
+      if (data && data.event && data.event.length < variables.first) {
+        setMore(false);
+      }
+      setMore(true);
+    },
   });
   const events = data && data.events;
   const classes = useStyles();
 
-  const loadingMoreEvents = networkStatus === NetworkStatus.fetchMore;
-
   const loadMoreEvents = () => {
+    setFetchingMore(true);
     fetchMore({
       variables: {
         first: variables.first,
@@ -36,6 +43,7 @@ const EventGridQuery = ({ query, variables }) => {
           setMore(false);
         }
         if (!fetchMoreResult) return previousResult;
+        setFetchingMore(false);
         return Object.assign({}, previousResult, {
           // Append the new posts results to the old one
           events: [...previousResult.events, ...fetchMoreResult.events],
@@ -46,6 +54,11 @@ const EventGridQuery = ({ query, variables }) => {
   if (error) console.log(error);
   return (
     <div suppressHydrationWarning={true}>
+      {loading && (
+        <Box my={3} className={classes.boxRow} suppressHydrationWarning={true}>
+          <Loading />
+        </Box>
+      )}
       {events && (
         <Box my={3} className={classes.boxRow}>
           <Grid container spacing={3}>
@@ -62,21 +75,17 @@ const EventGridQuery = ({ query, variables }) => {
           No events found
         </Box>
       )}
-      {loading && (
-        <Box my={3} className={classes.boxRow} suppressHydrationWarning={true}>
-          <Loading />
-        </Box>
-      )}
-      {events && events.length >= variables.first && more && (
+
+      {events?.length > 0 && more && (
         <Box my={3} className={classes.boxRow}>
           <Button
             onClick={() => loadMoreEvents()}
-            disabled={loadingMoreEvents}
+            disabled={fetchingMore || loading}
             variant="contained"
             color="secondary"
             disableElevation
           >
-            {loadingMoreEvents ? "Loading..." : "Show More"}
+            {fetchingMore ? "Loading..." : "Show More"}
           </Button>
         </Box>
       )}
