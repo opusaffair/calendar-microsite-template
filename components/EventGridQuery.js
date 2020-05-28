@@ -60,7 +60,7 @@ const EventGridQuery = ({ query, variables }) => {
           <Loading />
         </Box>
       )}
-      {events && (
+      {!loading && events && (
         <Box my={3} className={classes.boxRow}>
           <Grid container spacing={3}>
             {events.map((event) => (
