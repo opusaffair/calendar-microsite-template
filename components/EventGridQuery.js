@@ -52,7 +52,6 @@ const EventGridQuery = ({ query, variables }) => {
     });
   };
   if (error) console.log(error);
-  console.log("network", networkStatus, loading);
   return (
     <div suppressHydrationWarning={true}>
       {loading && (
