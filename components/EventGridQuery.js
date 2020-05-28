@@ -2,7 +2,7 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery } from "@apollo/client";
 import Loading from "./Loading";
 import EventGridCard from "./EventGridCard";
@@ -14,19 +14,19 @@ const EventGridQuery = ({ query, variables }) => {
     boxRow: { display: "flex", justifyContent: "center" },
   }));
 
-  const { loading, error, data, fetchMore } = useQuery(query, {
+  const { loading, error, data, fetchMore, networkStatus } = useQuery(query, {
     variables,
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching
     // more data
     notifyOnNetworkStatusChange: true,
-    // fetchPolicy: "cache-first",
-    onCompleted: (data) => {
-      if (data && data.event && data.event.length < variables.first) {
+    onCompleted: useCallback((data) => {
+      if (data.events.length >= variables.first) {
+        setMore(true);
+      } else {
         setMore(false);
       }
-      setMore(true);
-    },
+    }, []),
   });
   const events = data && data.events;
   const classes = useStyles();
@@ -52,6 +52,7 @@ const EventGridQuery = ({ query, variables }) => {
     });
   };
   if (error) console.log(error);
+  console.log("network", networkStatus, loading);
   return (
     <div suppressHydrationWarning={true}>
       {loading && (
@@ -75,8 +76,7 @@ const EventGridQuery = ({ query, variables }) => {
           No events found
         </Box>
       )}
-
-      {events?.length > 0 && more && (
+      {more && (
         <Box my={3} className={classes.boxRow}>
           <Button
             onClick={() => loadMoreEvents()}

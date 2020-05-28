@@ -19,7 +19,8 @@ export const allEventsQueryVars = {
 function Index() {
   const [tags, setTags] = useState([]);
   const [startDate, setStart] = useState(moment());
-  const [location, setLocation] = useState();
+  const [location, setLocation] = useState({ description: "Boston, MA" });
+  const [radius, setRadius] = useState(5000);
   const [endDate, setEnd] = useState(moment().add(30, "days"));
   const [checkedOnline, setCheckedOnline] = useState(true);
   const [checkedCanceled, setCheckedCanceled] = useState(false);
@@ -47,6 +48,16 @@ function Index() {
     ? `{alert_contains:"none"}`
     : ``;
 
+  const locationString = !checkedOnline
+    ? `{Venue: {
+        location_distance_lte: {
+          distance: ${radius || 5000}
+          point: { latitude: ${location.lat || 42.3600825}, longitude: ${
+        location.lng || -71.0588801
+      } }
+        }}}`
+    : ``;
+
   const ALL_EVENTS_QUERY = gql`
     query($first: Int, $offset: Int, $start: Float, $end: Float) {
       events: Event(
@@ -57,6 +68,7 @@ function Index() {
             { published: true }
             { end_datetime_gte: $start }
             { start_datetime_lte: $end }
+            ${locationString}
             ${siteTagString}
             ${onlineOnlyString}
             ${includeCanceledString}
@@ -98,6 +110,8 @@ function Index() {
             setTags={setTags}
             location={location}
             setLocation={setLocation}
+            radius={radius}
+            setRadius={setRadius}
           />
           <EventGridQuery
             query={ALL_EVENTS_QUERY}
@@ -105,6 +119,8 @@ function Index() {
               ...allEventsQueryVars,
               end: parseInt(endDate.format("X")),
               start: parseInt(startDate.format("X")),
+              radius,
+              location,
             }}
           />
         </Box>

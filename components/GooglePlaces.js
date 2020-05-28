@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect, useMemo } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
 
@@ -12,6 +12,7 @@ function loadScript(src, position, id) {
   if (!position) {
     return;
   }
+
   const script = document.createElement("script");
   script.setAttribute("async", "");
   script.setAttribute("id", id);
@@ -19,7 +20,7 @@ function loadScript(src, position, id) {
   position.appendChild(script);
 }
 
-const autocompleteService = { current: null, details: null };
+const autocompleteService = { current: null };
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -28,21 +29,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Auto({ errorMessage, setLocation, location, index }) {
+export default function GoogleMaps({ location, setLocation }) {
   const classes = useStyles();
-  const [inputValue, setInputValue] = useState("");
-  const loaded = useRef(false);
-  const key = process.env.GOOGLE_API_KEY;
-  const value = location;
-  const [options, setOptions] = useState([]);
+  const [value, setValue] = React.useState(location);
+  const [inputValue, setInputValue] = React.useState("");
+  const [options, setOptions] = React.useState([]);
+  const loaded = React.useRef(false);
+
+  const getPlaceDetails = (p) => {
+    autocompleteService.details.getDetails(
+      {
+        placeId: p.place_id,
+        fields: ["name", "geometry", "formatted_address", "place_id"],
+      },
+      (place, status) => {
+        setLocation({
+          ...p,
+          ...place,
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+        });
+      }
+    );
+  };
+
   useEffect(() => {
     console.log(location);
   }, [location]);
 
+  useEffect(() => {}, [value]);
+
   if (typeof window !== "undefined" && !loaded.current) {
     if (!document.querySelector("#google-maps")) {
       loadScript(
-        `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places`,
+        `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`,
         document.querySelector("head"),
         "google-maps"
       );
@@ -51,7 +71,7 @@ export default function Auto({ errorMessage, setLocation, location, index }) {
     loaded.current = true;
   }
 
-  const fetch = useMemo(
+  const fetch = React.useMemo(
     () =>
       throttle((request, callback) => {
         autocompleteService.current.getPlacePredictions(request, callback);
@@ -59,7 +79,7 @@ export default function Auto({ errorMessage, setLocation, location, index }) {
     []
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     let active = true;
 
     if (!autocompleteService.current && window.google) {
@@ -77,26 +97,21 @@ export default function Auto({ errorMessage, setLocation, location, index }) {
       return undefined;
     }
 
-    fetch(
-      {
-        input: inputValue,
-      },
-      (results) => {
-        if (active) {
-          let newOptions = [];
+    fetch({ input: inputValue }, (results) => {
+      if (active) {
+        let newOptions = [];
 
-          if (value) {
-            newOptions = [value];
-          }
-
-          if (results) {
-            newOptions = [...newOptions, ...results];
-          }
-
-          setOptions(newOptions);
+        if (value) {
+          newOptions = [value];
         }
+
+        if (results) {
+          newOptions = [...newOptions, ...results];
+        }
+
+        setOptions(newOptions);
       }
-    );
+    });
 
     return () => {
       active = false;
@@ -107,48 +122,31 @@ export default function Auto({ errorMessage, setLocation, location, index }) {
     <>
       <div id="map" />
       <Autocomplete
+        id="google-map-demo"
         getOptionLabel={(option) =>
           typeof option === "string" ? option : option.description
-        }
-        getOptionSelected={(option, value) =>
-          option.description === value.description
         }
         filterOptions={(x) => x}
         options={options}
         autoComplete
-        disableClearable
         includeInputInList
         filterSelectedOptions
+        fullWidth
         value={value}
-        style={{ flexGrow: 2 }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={errorMessage || "Add a location"}
-            // variant="outlined"
-            error={!!errorMessage}
-          />
-        )}
+        getOptionSelected={(o, v) => o.description === v.description}
         onChange={(event, newValue) => {
           setOptions(newValue ? [newValue, ...options] : options);
-          setLocation(newValue);
+          setValue(newValue);
           if (newValue) {
-            autocompleteService.details.getDetails(
-              {
-                placeId: newValue.place_id,
-                fields: ["name", "geometry", "formatted_address", "place_id"],
-              },
-              (place, status) => {
-                setLocation({ ...newValue, ...place });
-              }
-            );
-          } else {
-            setLocation({ description: "" });
+            getPlaceDetails(newValue);
           }
         }}
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);
         }}
+        renderInput={(params) => (
+          <TextField {...params} label="Add a location" />
+        )}
         renderOption={(option) => {
           const matches =
             option.structured_formatting.main_text_matched_substrings;

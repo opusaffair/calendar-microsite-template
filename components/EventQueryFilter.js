@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Switch,
   Grid,
+  Slider,
 } from "@material-ui/core";
 import MomentUtils from "@material-ui/pickers/adapter/moment";
 import moment from "moment";
@@ -30,6 +31,8 @@ const EventQueryFilter = ({
   setTags,
   location,
   setLocation,
+  radius,
+  setRadius,
 }) => {
   const [open, setOpen] = useState(true);
   const metersPerPx = (lat, zoom) =>
@@ -107,13 +110,33 @@ const EventQueryFilter = ({
                 />
               </FormGroup>
             </Grid>
-            <Grid item md={6} xs={12}>
-              <GooglePlaces
-                location={location}
-                setLocation={setLocation}
-                errorMessage={""}
-              />
-            </Grid>
+            {!checkedOnline && (
+              <>
+                {console.log(location, radius)}
+
+                <Grid item md={6} xs={12}>
+                  <GooglePlaces
+                    location={location}
+                    setLocation={setLocation}
+                    errorMessage={""}
+                  />
+                </Grid>
+                <Grid item md={3} xs={12}>
+                  <Slider
+                    value={radius}
+                    aria-labelledby="discrete-slider"
+                    onChange={(e, v) => {
+                      // console.log(v);
+                      setRadius(v);
+                    }}
+                    step={1000}
+                    marks
+                    min={1000}
+                    max={20000}
+                  />
+                </Grid>
+              </>
+            )}
           </Grid>
         </LocalizationProvider>
       </ExpansionPanelDetails>
