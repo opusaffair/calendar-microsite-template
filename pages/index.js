@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { gql } from "@apollo/client";
 import moment from "moment";
 import { withApollo } from "../utils/apollo";
@@ -17,13 +18,23 @@ export const allEventsQueryVars = {
 };
 
 function Index() {
+  const router = useRouter();
+  const { query } = router;
   const [tags, setTags] = useState([]);
   const [startDate, setStart] = useState(moment());
-  const [location, setLocation] = useState({ description: "Boston, MA" });
-  const [radius, setRadius] = useState(5000);
   const [endDate, setEnd] = useState(moment().add(30, "days"));
+  const [location, setLocation] = useState({
+    description: query.l || "Boston, MA",
+  });
+  const [radius, setRadius] = useState(5000);
   const [checkedOnline, setCheckedOnline] = useState(true);
   const [checkedCanceled, setCheckedCanceled] = useState(false);
+
+  useEffect(() => {
+    const { l, lat, lng } = query;
+    if (l && lat && lng) setLocation({ ...location, description: l });
+  }, [query]);
+
   const tagQuery = tags.map(
     (t) => `{
     Tag_some: {

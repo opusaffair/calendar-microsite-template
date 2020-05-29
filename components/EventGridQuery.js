@@ -19,6 +19,7 @@ const EventGridQuery = ({ query, variables }) => {
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching
     // more data
+    fetchPolicy: "cache-and-network",
     notifyOnNetworkStatusChange: true,
     onCompleted: useCallback((data) => {
       if (data.events.length >= variables.first) {
