@@ -25,15 +25,19 @@ function Index() {
   const [endDate, setEnd] = useState(moment().add(30, "days"));
   const [location, setLocation] = useState({
     description: query.l || "Boston, MA",
+    lat: 42.3600825,
+    lng: -71.0588801,
   });
+  const [results, setResults] = useState([]);
   const [radius, setRadius] = useState(5000);
-  const [checkedOnline, setCheckedOnline] = useState(true);
+  const [checkedOnline, setCheckedOnline] = useState(false);
   const [checkedCanceled, setCheckedCanceled] = useState(false);
+  const [checkedLocation, setCheckedLocation] = useState(true);
 
-  useEffect(() => {
-    const { l, lat, lng } = query;
-    if (l && lat && lng) setLocation({ ...location, description: l });
-  }, [query]);
+  // useEffect(() => {
+  //   const { l, lat, lng } = query;
+  //   if (l && lat && lng) setLocation({ ...location, description: l });
+  // }, [query]);
 
   const tagQuery = tags.map(
     (t) => `{
@@ -59,13 +63,11 @@ function Index() {
     ? `{alert_contains:"none"}`
     : ``;
 
-  const locationString = !checkedOnline
+  const locationString = checkedLocation
     ? `{Venue: {
         location_distance_lte: {
-          distance: ${radius || 5000}
-          point: { latitude: ${location.lat || 42.3600825}, longitude: ${
-        location.lng || -71.0588801
-      } }
+          distance: ${radius}
+          point: { latitude: ${location.lat}, longitude: ${location.lng} }
         }}}`
     : ``;
 
@@ -97,6 +99,13 @@ function Index() {
         displayInstanceDaterange(withYear: true)
         organizerNames
         alert
+        Venue {
+          _id
+          location {
+            latitude
+            longitude
+          }
+        }
         Tag {
           _id
           name
@@ -117,15 +126,19 @@ function Index() {
             setCheckedOnline={setCheckedOnline}
             checkedCanceled={checkedCanceled}
             setCheckedCanceled={setCheckedCanceled}
+            checkedLocation={checkedLocation}
+            setCheckedLocation={setCheckedLocation}
             tags={tags}
             setTags={setTags}
             location={location}
             setLocation={setLocation}
             radius={radius}
             setRadius={setRadius}
+            results={results}
           />
           <EventGridQuery
             query={ALL_EVENTS_QUERY}
+            setResults={setResults}
             variables={{
               ...allEventsQueryVars,
               end: parseInt(endDate.format("X")),

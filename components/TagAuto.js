@@ -22,15 +22,14 @@ const TAG_QUERY = gql`
   }
 `;
 
-function TagAuto({ setTags }) {
-  const [value, setValue] = useState([]);
+function TagAuto({ setTags, tags }) {
+  const [value, setValue] = useState(tags || []);
   const [getTags, { data, loading, error }] = useLazyQuery(TAG_QUERY);
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const needsTags = open && options.length === 0;
 
   useEffect(() => {
-    // console.log(value);
     setTags(value);
   }, [value]);
 

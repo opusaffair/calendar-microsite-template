@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
+import { useGoogleMaps } from "react-hook-google-maps";
 
 function loadScript(src, position, id) {
   if (!position) {
@@ -43,12 +44,14 @@ export default function GoogleMaps({ location, setLocation }) {
         fields: ["name", "geometry", "formatted_address", "place_id"],
       },
       (place, status) => {
-        setLocation({
-          ...p,
-          ...place,
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
-        });
+        if (place) {
+          setLocation({
+            ...p,
+            ...place,
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+          });
+        }
       }
     );
   };
@@ -59,17 +62,17 @@ export default function GoogleMaps({ location, setLocation }) {
 
   useEffect(() => {}, [value]);
 
-  if (typeof window !== "undefined" && !loaded.current) {
-    if (!document.querySelector("#google-maps")) {
-      loadScript(
-        `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`,
-        document.querySelector("head"),
-        "google-maps"
-      );
-    }
+  // if (typeof window !== "undefined" && !loaded.current) {
+  //   if (!document.querySelector("#google-maps")) {
+  //     loadScript(
+  //       `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`,
+  //       document.querySelector("head"),
+  //       "google-maps"
+  //     );
+  //   }
 
-    loaded.current = true;
-  }
+  //   loaded.current = true;
+  // }
 
   const fetch = React.useMemo(
     () =>
@@ -83,6 +86,7 @@ export default function GoogleMaps({ location, setLocation }) {
     let active = true;
 
     if (!autocompleteService.current && window.google) {
+      console.log(autocompleteService);
       autocompleteService.current = new window.google.maps.places.AutocompleteService();
       autocompleteService.details = new window.google.maps.places.PlacesService(
         document.getElementById(`map`)

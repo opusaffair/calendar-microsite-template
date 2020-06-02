@@ -14,10 +14,19 @@ import MomentUtils from "@material-ui/pickers/adapter/moment";
 import moment from "moment";
 import { DatePicker, LocalizationProvider } from "@material-ui/pickers";
 import SortIcon from "@material-ui/icons/Sort";
-
+import { useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useState } from "react";
 import TagAuto from "./TagAuto";
 import GooglePlaces from "./GooglePlaces";
+import EventsMap from "./EventsMap";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+  switchLabel: {
+    fontSize: "0.8rem",
+  },
+});
 const EventQueryFilter = ({
   startDate,
   setStart,
@@ -33,10 +42,12 @@ const EventQueryFilter = ({
   setLocation,
   radius,
   setRadius,
+  results,
+  checkedLocation,
+  setCheckedLocation,
 }) => {
   const [open, setOpen] = useState(true);
-  const metersPerPx = (lat, zoom) =>
-    (156543.03392 * Math.cos((lat * Math.PI) / 180)) / Math.pow(2, zoom);
+  // const [checkedLocation, setCheckedLocation] = useState(true);
   const toggleCheckedOnline = () => {
     setCheckedOnline((prev) => !prev);
   };
@@ -44,6 +55,12 @@ const EventQueryFilter = ({
     setCheckedCanceled((prev) => !prev);
   };
 
+  const toggleCheckedLocation = () => {
+    setCheckedLocation((prev) => !prev);
+  };
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const classes = useStyles();
   return (
     <ExpansionPanel
       expanded={open}
@@ -60,32 +77,31 @@ const EventQueryFilter = ({
       <ExpansionPanelDetails>
         <LocalizationProvider dateAdapter={MomentUtils}>
           <Grid container spacing={3}>
-            <Grid item md={3} xs={12}>
-              <DatePicker
-                renderInput={(props) => (
-                  <TextField {...props} helperText="" label="Start Date" />
-                )}
-                value={startDate}
-                onChange={(date) => setStart(date)}
-              />
-            </Grid>
-
-            <Grid item md={3} xs={12}>
-              <DatePicker
-                renderInput={(props) => (
-                  <TextField {...props} helperText="" label="End Date" />
-                )}
-                value={endDate}
-                onChange={(date) => setEnd(date)}
-              />
-            </Grid>
-
-            <Grid item md={4} xs={12}>
-              <TagAuto tags={tags} setTags={setTags} />
-            </Grid>
-
-            <Grid item md={2} xs={12}>
-              <FormGroup>
+            <Grid item md={6} container spacing={3}>
+              <Grid item md={6} xs={12}>
+                <DatePicker
+                  renderInput={(props) => (
+                    <TextField {...props} helperText="" label="Start Date" />
+                  )}
+                  value={startDate}
+                  onChange={(date) => setStart(date)}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <DatePicker
+                  renderInput={(props) => (
+                    <TextField {...props} helperText="" label="End Date" />
+                  )}
+                  value={endDate}
+                  onChange={(date) => setEnd(date)}
+                />
+              </Grid>
+              {!checkedOnline && (checkedLocation || !mdUp) && (
+                <Grid item xs={12}>
+                  <TagAuto tags={tags} setTags={setTags} />
+                </Grid>
+              )}
+              <Grid item md={4} xs={12}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -95,8 +111,10 @@ const EventQueryFilter = ({
                     />
                   }
                   label="Online Only"
-                  style={{ marginBottom: 8 }}
+                  classes={{ label: classes.switchLabel }}
                 />
+              </Grid>
+              <Grid item md={4} xs={12}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -106,37 +124,51 @@ const EventQueryFilter = ({
                     />
                   }
                   label="Include Canceled"
-                  style={{ marginBottom: 8 }}
+                  classes={{ label: classes.switchLabel }}
                 />
-              </FormGroup>
-            </Grid>
-            {!checkedOnline && (
-              <>
-                {console.log(location, radius)}
+              </Grid>
+              {!checkedOnline && (
+                <Grid item md={4} xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        size="small"
+                        checked={checkedLocation}
+                        onChange={toggleCheckedLocation}
+                      />
+                    }
+                    label="Limit by Location"
+                    classes={{ label: classes.switchLabel }}
+                  />
+                </Grid>
+              )}
 
-                <Grid item md={6} xs={12}>
+              {!checkedOnline && checkedLocation && (
+                <Grid item xs={12}>
                   <GooglePlaces
                     location={location}
                     setLocation={setLocation}
                     errorMessage={""}
                   />
                 </Grid>
-                <Grid item md={3} xs={12}>
-                  <Slider
-                    value={radius}
-                    aria-labelledby="discrete-slider"
-                    onChange={(e, v) => {
-                      // console.log(v);
-                      setRadius(v);
-                    }}
-                    step={1000}
-                    marks
-                    min={1000}
-                    max={20000}
+              )}
+            </Grid>
+            <Grid item md={6} container spacing={3}>
+              {(checkedOnline || !checkedLocation) && mdUp && (
+                <Grid item xs={12}>
+                  <TagAuto tags={tags} setTags={setTags} />
+                </Grid>
+              )}
+              {checkedLocation && !checkedOnline && (
+                <Grid item xs={12}>
+                  <EventsMap
+                    location={location}
+                    results={results}
+                    setRadius={setRadius}
                   />
                 </Grid>
-              </>
-            )}
+              )}
+            </Grid>
           </Grid>
         </LocalizationProvider>
       </ExpansionPanelDetails>

@@ -2,12 +2,12 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import Loading from "./Loading";
 import EventGridCard from "./EventGridCard";
 
-const EventGridQuery = ({ query, variables }) => {
+const EventGridQuery = ({ query, variables, setResults }) => {
   const [more, setMore] = useState(true);
   const [fetchingMore, setFetchingMore] = useState(false);
   const useStyles = makeStyles(() => ({
@@ -19,7 +19,7 @@ const EventGridQuery = ({ query, variables }) => {
     // Setting this value to true will make the component rerender when
     // the "networkStatus" changes, so we are able to know if it is fetching
     // more data
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: "cache-first",
     notifyOnNetworkStatusChange: true,
     onCompleted: useCallback((data) => {
       if (data.events.length >= variables.first) {
@@ -31,6 +31,11 @@ const EventGridQuery = ({ query, variables }) => {
   });
   const events = data && data.events;
   const classes = useStyles();
+
+  useEffect(() => {
+    setResults(events);
+    // console.log("events", events);
+  }, [events]);
 
   const loadMoreEvents = () => {
     setFetchingMore(true);
@@ -45,6 +50,7 @@ const EventGridQuery = ({ query, variables }) => {
         }
         if (!fetchMoreResult) return previousResult;
         setFetchingMore(false);
+        // console.log([...previousResult.events, ...fetchMoreResult.events]);
         return Object.assign({}, previousResult, {
           // Append the new posts results to the old one
           events: [...previousResult.events, ...fetchMoreResult.events],
@@ -60,7 +66,7 @@ const EventGridQuery = ({ query, variables }) => {
           <Loading />
         </Box>
       )}
-      {!loading && events && (
+      {events && (
         <Box my={3} className={classes.boxRow}>
           <Grid container spacing={3}>
             {events.map((event) => (
