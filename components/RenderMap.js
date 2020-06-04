@@ -243,7 +243,9 @@ function RenderMap({
             </InfoWindow>
           )}
         </GoogleMap>
-        <Button onClick={() => handleRefocus(mapRef)}>Refocus</Button>
+        <Button onClick={() => handleRefocus(mapRef)}>
+          Refocus Search on Map
+        </Button>
       </Fragment>
     );
   };

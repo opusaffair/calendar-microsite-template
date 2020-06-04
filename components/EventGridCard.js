@@ -36,8 +36,8 @@ const EventGridCard = ({ event }) => {
     <Card elevation={0} square className={classes.card}>
       <CardActionArea
         component={Link}
-        href={`/event/[slug]`}
-        as={`/event/${event.slug}`}
+        href={`/events/[slug]`}
+        as={`/events/${event.slug}`}
         target="_blank"
         style={{
           height: "100%",
