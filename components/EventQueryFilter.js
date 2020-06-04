@@ -4,14 +4,11 @@ import {
   ExpansionPanelSummary,
   Typography,
   TextField,
-  FormGroup,
   FormControlLabel,
   Switch,
   Grid,
-  Slider,
 } from "@material-ui/core";
 import MomentUtils from "@material-ui/pickers/adapter/moment";
-import moment from "moment";
 import { DatePicker, LocalizationProvider } from "@material-ui/pickers";
 import SortIcon from "@material-ui/icons/Sort";
 import { useTheme } from "@material-ui/core/styles";
@@ -19,10 +16,8 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useState } from "react";
 import TagAuto from "./TagAuto";
 import GooglePlaces from "./GooglePlaces";
-import EventsMap from "./EventsMap";
 import RenderMap from "./RenderMap";
 import { makeStyles } from "@material-ui/core/styles";
-import { useLoadScript } from "@react-google-maps/api";
 
 const useStyles = makeStyles({
   switchLabel: {

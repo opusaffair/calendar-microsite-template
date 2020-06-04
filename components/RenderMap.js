@@ -8,7 +8,8 @@ import {
   Circle,
 } from "@react-google-maps/api";
 import { Button } from "@material-ui/core";
-import { useState, Fragment, useEffect, useMemo, useRef } from "react";
+import { useState, Fragment, useEffect, useMemo } from "react";
+import EventGridCard from "./EventGridCard";
 import throttle from "lodash/throttle";
 
 function distance(lat1, lon1, lat2, lon2) {
@@ -237,8 +238,8 @@ function RenderMap({
               anchor={markerMap[selectedPlace.id]}
               onCloseClick={() => setInfoOpen(false)}
             >
-              <div>
-                <h3>{selectedPlace.title}</h3>
+              <div style={{ width: 250 }}>
+                <EventGridCard event={selectedPlace} />
               </div>
             </InfoWindow>
           )}

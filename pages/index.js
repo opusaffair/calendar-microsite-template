@@ -36,7 +36,7 @@ function Index() {
   });
   const [checkedOnline, setCheckedOnline] = useState(false);
   const [checkedCanceled, setCheckedCanceled] = useState(false);
-  const [checkedLocation, setCheckedLocation] = useState(true);
+  const [checkedLocation, setCheckedLocation] = useState(false);
 
   // useEffect(() => {
   //   const { l, lat, lng } = query;
