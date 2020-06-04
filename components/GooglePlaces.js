@@ -56,11 +56,9 @@ export default function GoogleMaps({ location, setLocation }) {
     );
   };
 
-  useEffect(() => {
-    console.log(location);
-  }, [location]);
+  // useEffect(() => {}, [location]);
 
-  useEffect(() => {}, [value]);
+  // useEffect(() => {}, [value]);
 
   // if (typeof window !== "undefined" && !loaded.current) {
   //   if (!document.querySelector("#google-maps")) {
@@ -86,7 +84,6 @@ export default function GoogleMaps({ location, setLocation }) {
     let active = true;
 
     if (!autocompleteService.current && window.google) {
-      console.log(autocompleteService);
       autocompleteService.current = new window.google.maps.places.AutocompleteService();
       autocompleteService.details = new window.google.maps.places.PlacesService(
         document.getElementById(`map`)

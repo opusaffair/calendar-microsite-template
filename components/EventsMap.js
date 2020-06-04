@@ -1,9 +1,6 @@
 import React, { useMemo, useEffect } from "react";
 import { useGoogleMaps } from "react-hook-google-maps";
 import throttle from "lodash/throttle";
-// based on https://developers.google.com/maps/documentation/javascript/adding-a-google-map
-const uluru = { lat: -25.344, lng: 131.036 };
-const rando = { lat: -25.444, lng: 131.036 };
 
 function distance(lat1, lon1, lat2, lon2) {
   if (lat1 == lat2 && lon1 == lon2) {
@@ -22,8 +19,9 @@ function distance(lat1, lon1, lat2, lon2) {
     dist = Math.acos(dist);
     dist = (dist * 180) / Math.PI;
     dist = dist * 60 * 1.1515;
-    //dist in meters
-    return dist * 1609.344;
+    //    dist =  dist * 1609.344;
+    //This isn't a standard unit. It's an approximation for the display
+    return dist * 800;
   }
 }
 
@@ -31,34 +29,35 @@ const EventsMap = React.memo(function Map({
   location,
   results = [],
   setRadius,
+  inputRef: ref,
+  map,
+  google,
 }) {
   let markers = [];
-  const { ref, map, google } = useGoogleMaps(
-    `${process.env.GOOGLE_API_KEY}&libraries=places`,
-    {
-      zoom: 12,
-      center: location,
-      disableDefaultUI: true,
-      zoomControl: true,
-    }
-  );
+  //   const { ref, map, google } = useGoogleMaps(
+  //     `${process.env.GOOGLE_API_KEY}&libraries=places`,
+  //     {
+  //       zoom: 12,
+  //       center: location,
+  //       disableDefaultUI: true,
+  //       zoomControl: true,
+  //     }
+  //   );
 
   useEffect(() => {
     if (map) {
       map.setCenter(location);
-      // deleteMarkers();
-      // addMarker(location);
     }
   }, [location]);
 
   useEffect(() => {
-    console.log(results);
-    // markers = [...results, location];
-    resetMarkers();
+    console.log("results changed", results, markers);
+    deleteMarkers();
+    markResults();
   }, [results]);
 
   function addMarker(loc) {
-    if (google) {
+    if (map) {
       var marker = new google.maps.Marker({
         position: loc,
         map: map,
@@ -67,10 +66,9 @@ const EventsMap = React.memo(function Map({
     }
   }
 
-  function resetMarkers() {
-    deleteMarkers();
-    markers = [...results, location];
-    markers.forEach((marker) => {
+  function markResults() {
+    console.log("marking results");
+    results.forEach((marker) => {
       if (marker.Venue) {
         marker.Venue.forEach((venue) => {
           const l = venue.location;
@@ -78,9 +76,11 @@ const EventsMap = React.memo(function Map({
         });
       }
     });
+    console.log("markers", markers);
   }
 
   function deleteMarkers() {
+    console.log("del");
     setMapOnAll(null);
     markers = [];
   }
@@ -94,33 +94,26 @@ const EventsMap = React.memo(function Map({
   const call = useMemo(
     () =>
       throttle((map) => {
+        deleteMarkers();
         var bounds = map.getBounds();
         var center = map.center;
         var ne = bounds.getNorthEast();
-        var sw = bounds.getSouthWest();
-        console.log(
-          "moved map",
-          center,
-          distance(center.lat(), center.lng(), ne.lat(), ne.lng(), "K")
-        );
         setRadius(distance(center.lat(), center.lng(), ne.lat(), ne.lng()));
       }, 500),
     []
   );
 
   if (map) {
-    // new google.maps.Marker({ position: uluru, map });
-    // new google.maps.Marker({ position: location, map });
     google.maps.event.addListener(map, "bounds_changed", function () {
-      // var bounds = map.getBounds();
-      // var ne = bounds.getNorthEast();
-      // var sw = bounds.getSouthWest();
-      // console.log(distance(ne.lat(), ne.lng(), sw.lat(), sw.lng(), "K"));
-
       call(map);
     });
   }
 
-  return <div ref={ref} style={{ height: 300 }} />;
+  return (
+    <>
+      <div ref={ref} style={{ height: 300 }} />
+      <button onClick={deleteMarkers}>del</button>
+    </>
+  );
 });
 export default EventsMap;

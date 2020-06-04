@@ -30,6 +30,10 @@ function Index() {
   });
   const [results, setResults] = useState([]);
   const [radius, setRadius] = useState(5000);
+  const [boundingBox, setBoundingBox] = useState({
+    ne: { lat: 42.39812443863671, lng: -70.96206308339843 },
+    sw: { lat: 42.32201751574154, lng: -71.15569711660156 },
+  });
   const [checkedOnline, setCheckedOnline] = useState(false);
   const [checkedCanceled, setCheckedCanceled] = useState(false);
   const [checkedLocation, setCheckedLocation] = useState(true);
@@ -63,13 +67,39 @@ function Index() {
     ? `{alert_contains:"none"}`
     : ``;
 
-  const locationString = checkedLocation
-    ? `{Venue: {
+  const locationString =
+    checkedLocation && !checkedOnline
+      ? `{Venue: {
         location_distance_lte: {
           distance: ${radius}
           point: { latitude: ${location.lat}, longitude: ${location.lng} }
         }}}`
-    : ``;
+      : ``;
+
+  const lngBoxString =
+    boundingBox.sw.lng <= boundingBox.ne.lng
+      ? `
+{ Venue: { longitude_gte: ${boundingBox.sw.lng} } }
+{ Venue: { longitude_lte: ${boundingBox.ne.lng} } }
+`
+      : `{
+  OR:[{ Venue: { longitude_lte: ${boundingBox.sw.lng} } }
+    { Venue: { longitude_gte: ${boundingBox.ne.lng} } }]
+}`;
+
+  const latBoxString =
+    boundingBox.sw.lat <= boundingBox.ne.lat
+      ? `
+{ Venue: { latitude_gte: ${boundingBox.sw.lat} } }
+{ Venue: { latitude_lte: ${boundingBox.ne.lat} } }
+`
+      : `{
+OR:[{ Venue: { latitude_lte: ${boundingBox.sw.lat} } }
+{ Venue: { latitude_gte: ${boundingBox.ne.lat} } }]
+}`;
+
+  const locationBoxString =
+    checkedLocation && !checkedOnline ? `${latBoxString}${lngBoxString}` : ``;
 
   const ALL_EVENTS_QUERY = gql`
     query($first: Int, $offset: Int, $start: Float, $end: Float) {
@@ -81,7 +111,7 @@ function Index() {
             { published: true }
             { end_datetime_gte: $start }
             { start_datetime_lte: $end }
-            ${locationString}
+            ${locationBoxString}
             ${siteTagString}
             ${onlineOnlyString}
             ${includeCanceledString}
@@ -135,6 +165,7 @@ function Index() {
             radius={radius}
             setRadius={setRadius}
             results={results}
+            setBoundingBox={setBoundingBox}
           />
           <EventGridQuery
             query={ALL_EVENTS_QUERY}

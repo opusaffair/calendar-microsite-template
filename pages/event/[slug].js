@@ -20,12 +20,6 @@ import TagChip from "../../components/TagChip";
 const visibleTags = process.env.VISIBLE_TAGS || [];
 
 const useStyles = makeStyles((theme) => ({
-  // card: {
-  //   backgroundColor: "#fff",
-  //   height: "100%",
-  // },
-  // cardContent: { height: "100%" },
-  // img: { width: "100%", height: "100%" },
   topRow: {
     [theme.breakpoints.down("sm")]: { flexDirection: "column-reverse" },
   },
@@ -100,9 +94,11 @@ function Event({ theme }) {
   `;
   // const { slug } = router.query;
   // const slug =
-  // "boston-opera-collaborative-longy-school-of-music-of-bard-college-opera-bites";
+  //   "boston-opera-collaborative-longy-school-of-music-of-bard-college-opera-bites";
+  const slug = router.query?.slug;
   const { loading, data, error } = useQuery(EVENT_DETAIL_QUERY, {
-    variables: { slug: router.query?.slug },
+    variables: { slug },
+    fetchPolicy: "cache-first",
   });
   const event = data && data.event;
   if (error) console.log(error);
@@ -281,4 +277,4 @@ function Event({ theme }) {
   );
 }
 
-export default withApollo({ ssr: true })(withTheme(Event));
+export default withApollo({ ssr: false })(withTheme(Event));

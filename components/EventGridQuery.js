@@ -33,8 +33,7 @@ const EventGridQuery = ({ query, variables, setResults }) => {
   const classes = useStyles();
 
   useEffect(() => {
-    setResults(events);
-    // console.log("events", events);
+    if (setResults) setResults(events);
   }, [events]);
 
   const loadMoreEvents = () => {

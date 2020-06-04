@@ -10,5 +10,6 @@ module.exports = {
     SITE_NAME: "Calendar Template",
     VISIBLE_TAGS: ["Online / Virtual"],
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+    GOOGLE_MAP_LIBRARIES: ["places"],
   },
 };

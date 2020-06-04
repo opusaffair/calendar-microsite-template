@@ -20,13 +20,18 @@ import { useState } from "react";
 import TagAuto from "./TagAuto";
 import GooglePlaces from "./GooglePlaces";
 import EventsMap from "./EventsMap";
+import RenderMap from "./RenderMap";
 import { makeStyles } from "@material-ui/core/styles";
+import { useLoadScript } from "@react-google-maps/api";
 
 const useStyles = makeStyles({
   switchLabel: {
     fontSize: "0.8rem",
   },
 });
+
+const lib = process.env.GOOGLE_MAP_LIBRARIES;
+
 const EventQueryFilter = ({
   startDate,
   setStart,
@@ -45,6 +50,7 @@ const EventQueryFilter = ({
   results,
   checkedLocation,
   setCheckedLocation,
+  setBoundingBox,
 }) => {
   const [open, setOpen] = useState(true);
   // const [checkedLocation, setCheckedLocation] = useState(true);
@@ -61,6 +67,17 @@ const EventQueryFilter = ({
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up("md"));
   const classes = useStyles();
+
+  // const { ref, map, google } = useGoogleMaps(
+  //   `${process.env.GOOGLE_API_KEY}&libraries=places`,
+  //   {
+  //     zoom: 12,
+  //     center: location,
+  //     disableDefaultUI: true,
+  //     zoomControl: true,
+  //   }
+  // );
+
   return (
     <ExpansionPanel
       expanded={open}
@@ -161,10 +178,21 @@ const EventQueryFilter = ({
               )}
               {checkedLocation && !checkedOnline && (
                 <Grid item xs={12}>
-                  <EventsMap
+                  {/* <EventsMap
                     location={location}
                     results={results}
                     setRadius={setRadius}
+                    inputRef={ref}
+                    map={map}
+                    google={google}
+                  /> */}
+                  <RenderMap
+                    lib={lib}
+                    results={results}
+                    location={location}
+                    setRadius={setRadius}
+                    radius={radius}
+                    setBoundingBox={setBoundingBox}
                   />
                 </Grid>
               )}
