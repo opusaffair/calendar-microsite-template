@@ -1,6 +1,6 @@
 {
-  "name": "With Apollo Client 3",
-  "short_name": "With AC3",
+  "name": "Microsite Template",
+  "short_name": "Microsite",
   "theme_color": "#2196f3",
   "background_color": "#2196f3",
   "display": "minimal-ui",

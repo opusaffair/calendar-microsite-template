@@ -1,6 +1,7 @@
 require("dotenv").config();
 const withPWA = require("next-pwa");
 const prod = process.env.NODE_ENV === "production";
+console.log("nextconfig", prod);
 module.exports = withPWA({
   target: "serverless",
   env: {
