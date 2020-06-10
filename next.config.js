@@ -1,5 +1,7 @@
 require("dotenv").config();
-module.exports = {
+const withPWA = require("next-pwa");
+const prod = process.env.NODE_ENV === "production";
+module.exports = withPWA({
   target: "serverless",
   env: {
     GRAPHQL_URI: "https://api.dev.commoncalendar.org/graphql",
@@ -12,4 +14,8 @@ module.exports = {
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     GOOGLE_MAP_LIBRARIES: ["places"],
   },
-};
+  pwa: {
+    dest: "public",
+    disable: prod ? false : true,
+  },
+});

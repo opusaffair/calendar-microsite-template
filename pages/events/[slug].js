@@ -10,7 +10,6 @@ import Link from "../../components/Link";
 import Layout from "../../components/Layout";
 import Loading from "../../components/Loading";
 import { useRouter } from "next/router";
-import { withApollo } from "../../utils/apollo";
 import { useQuery, gql } from "@apollo/client";
 import { makeStyles, withTheme } from "@material-ui/core/styles";
 import Chip from "@material-ui/core/Chip";
@@ -277,4 +276,4 @@ function Event({ theme }) {
   );
 }
 
-export default withApollo({ ssr: false })(withTheme(Event));
+export default withTheme(Event);

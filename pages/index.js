@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { gql } from "@apollo/client";
 import moment from "moment";
-import { withApollo } from "../utils/apollo";
+// import { withApollo } from "../lib/apollo";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import Layout from "../components/Layout";
 import EventGridQuery from "../components/EventGridQuery";
 import EventQueryFilter from "../components/EventQueryFilter";
+import { initializeApollo } from "lib/apolloClient";
 
 let defaultStart = parseFloat(moment().format("X"));
 
@@ -34,14 +35,9 @@ function Index() {
     ne: { lat: 42.39812443863671, lng: -70.96206308339843 },
     sw: { lat: 42.32201751574154, lng: -71.15569711660156 },
   });
-  const [checkedOnline, setCheckedOnline] = useState(false);
+  const [checkedOnline, setCheckedOnline] = useState(true);
   const [checkedCanceled, setCheckedCanceled] = useState(false);
   const [checkedLocation, setCheckedLocation] = useState(false);
-
-  // useEffect(() => {
-  //   const { l, lat, lng } = query;
-  //   if (l && lat && lng) setLocation({ ...location, description: l });
-  // }, [query]);
 
   const tagQuery = tags.map(
     (t) => `{
@@ -184,4 +180,45 @@ OR:[{ Venue: { latitude_lte: ${boundingBox.sw.lat} } }
   );
 }
 
-export default withApollo({ ssr: false })(Index);
+// export async function getStaticProps() {
+//   const apolloClient = initializeApollo();
+//   const BASE_ALL_EVENTS_QUERY = gql`
+//     {
+//       Event(first: 10, offset: 0) {
+//         _id
+//         opus_id
+//         title
+//         supertitle_creative
+//         slug
+//         image_url
+//         displayInstanceDaterange(withYear: true)
+//         organizerNames
+//         alert
+//         Venue {
+//           _id
+//           location {
+//             latitude
+//             longitude
+//           }
+//         }
+//         Tag {
+//           _id
+//           name
+//         }
+//       }
+//     }
+//   `;
+
+//   await apolloClient.query({
+//     query: BASE_ALL_EVENTS_QUERY,
+//     variables: allEventsQueryVars,
+//   });
+//   return {
+//     props: {
+//       initialApolloState: apolloClient.cache.extract(),
+//     },
+//     unstable_revalidate: 1,
+//   };
+// }
+
+export default Index;

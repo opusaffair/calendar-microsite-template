@@ -1,0 +1,19 @@
+{
+  "name": "With Apollo Client 3",
+  "short_name": "With AC3",
+  "theme_color": "#2196f3",
+  "background_color": "#2196f3",
+  "display": "minimal-ui",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192"
+    }
+  ]
+}

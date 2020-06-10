@@ -1,6 +1,5 @@
 import React from "react";
 import { useQuery, gql } from "@apollo/client";
-import { withApollo } from "../utils/apollo";
 
 export const ALL_EVENTS_QUERY = gql`
   query {
@@ -66,4 +65,4 @@ class Sitemap extends React.Component {
   }
 }
 
-export default withApollo({ ssr: true })(Sitemap);
+export default Sitemap;

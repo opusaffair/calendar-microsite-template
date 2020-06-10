@@ -1,7 +1,6 @@
 import React from "react";
 import { gql } from "@apollo/client";
 import moment from "moment";
-import { withApollo } from "../utils/apollo";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import Layout from "../components/Layout";
@@ -77,4 +76,4 @@ function Index() {
   );
 }
 
-export default withApollo({ ssr: false })(Index);
+export default Index;
