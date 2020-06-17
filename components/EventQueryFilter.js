@@ -8,6 +8,8 @@ import {
   Switch,
   Grid,
 } from "@material-ui/core";
+// import dynamic from "next/dynamic";
+import Head from "next/head";
 import MomentUtils from "@material-ui/pickers/adapter/moment";
 import { DatePicker, LocalizationProvider } from "@material-ui/pickers";
 import SortIcon from "@material-ui/icons/Sort";
@@ -18,6 +20,9 @@ import TagAuto from "./TagAuto";
 import GooglePlaces from "./GooglePlaces";
 import RenderMap from "./RenderMap";
 import { makeStyles } from "@material-ui/core/styles";
+// const DynamicSpiderfier = dynamic(() =>
+//   import("npm-overlapping-marker-spiderfier")
+// );
 
 const useStyles = makeStyles({
   switchLabel: {
@@ -80,6 +85,9 @@ const EventQueryFilter = ({
         setOpen(!open);
       }}
     >
+      <Head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier/1.0.3/oms.min.js"></script>
+      </Head>
       <ExpansionPanelSummary
         expandIcon={<SortIcon />}
         aria-controls="filter-panel-content"

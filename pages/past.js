@@ -29,6 +29,14 @@ export const PAST_EVENTS_QUERY = gql`
       displayInstanceDaterange(withYear: true)
       organizerNames
       alert
+      Venue {
+          _id
+          name
+          location {
+            latitude
+            longitude
+          }
+        }
       Tag {
         _id
         name

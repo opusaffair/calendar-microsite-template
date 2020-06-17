@@ -1,7 +1,6 @@
-require("dotenv").config();
 const withPWA = require("next-pwa");
-const prod = process.env.NODE_ENV === "production";
-console.log("nextconfig", prod);
+console.log("PWA", process.env.PWA_DISABLE);
+const pwaDisable = process.env.PWA_DISABLE ? true : false;
 module.exports = withPWA({
   target: "serverless",
   env: {
@@ -17,6 +16,6 @@ module.exports = withPWA({
   },
   pwa: {
     dest: "public",
-    disable: prod ? false : true,
+    disable: pwaDisable,
   },
 });

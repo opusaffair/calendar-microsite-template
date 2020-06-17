@@ -124,6 +124,12 @@ const EventGridCard = ({ event }) => {
               style={{ paddingBottom: 15 }}
             >
               {event.organizerNames}
+              {event.venueNames && (
+                <>
+                  <br />
+                  {event.venueNames}
+                </>
+              )}
             </Typography>
             {event.Tag.filter((tag) => visibleTags.indexOf(tag.name) != -1).map(
               (tag) => (

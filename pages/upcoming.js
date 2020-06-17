@@ -33,6 +33,14 @@ export const ALL_EVENTS_QUERY = gql`
       image_url
       displayInstanceDaterange(withYear: true)
       organizerNames
+      Venue {
+          _id
+          name
+          location {
+            latitude
+            longitude
+          }
+        }
       Tag {
         _id
         name

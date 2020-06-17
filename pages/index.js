@@ -124,9 +124,12 @@ OR:[{ Venue: { latitude_lte: ${boundingBox.sw.lat} } }
         image_url
         displayInstanceDaterange(withYear: true)
         organizerNames
+        venueNames
         alert
+
         Venue {
           _id
+          name
           location {
             latitude
             longitude

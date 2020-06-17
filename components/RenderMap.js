@@ -5,11 +5,11 @@ import {
   Marker,
   InfoWindow,
   useLoadScript,
-  Circle,
+  MarkerClusterer,
 } from "@react-google-maps/api";
 import { Button } from "@material-ui/core";
 import { useState, Fragment, useEffect, useMemo } from "react";
-import EventGridCard from "./EventGridCard";
+import EventInfoWindow from "components/EventInfoWindow";
 import throttle from "lodash/throttle";
 
 function distance(lat1, lon1, lat2, lon2) {
@@ -46,10 +46,13 @@ function RenderMap({
   // The things we need to track in state
   const [mapRef, setMapRef] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [oms, setOms] = useState(null);
+
   const [markerMap, setMarkerMap] = useState({});
   const [center, setCenter] = useState(location);
   const [zoom, setZoom] = useState(12);
-  const [clickedLatLng, setClickedLatLng] = useState(null);
+  // const [clickedLatLng, setClickedLatLng] = useState(null);
   const [infoOpen, setInfoOpen] = useState(false);
 
   //   // Load the Google maps scripts
@@ -92,19 +95,29 @@ function RenderMap({
     setMapRef(map);
     // Fit map bounds to contain all markers
     // fitBounds(map);
+    var newOms = new window.OverlappingMarkerSpiderfier(map, {
+      markersWontMove: true, // we promise not to move any markers, allowing optimizations
+      markersWontHide: true, // we promise not to change visibility of any markers, allowing optimizations
+      basicFormatEvents: true, // allow the library to skip calculating advanced formatting information
+    });
+    setOms(newOms);
   };
 
   // We have to create a mapping of our places to actual Marker objects
   const markerLoadHandler = (marker, place) => {
+    oms.addMarker(marker);
+    window.google.maps.event.addListener(marker, "spider_click", (e) => {
+      markerClickHandler(e, place, marker);
+    });
     return setMarkerMap((prevState) => {
       return { ...prevState, [place.id]: marker };
     });
   };
 
-  const markerClickHandler = (event, place) => {
+  const markerClickHandler = (event, place, marker) => {
     // Remember which place was clicked
     setSelectedPlace(place);
-
+    setSelectedMarker(marker);
     // Required so clicking a 2nd marker works as expected
     if (infoOpen) {
       setInfoOpen(false);
@@ -136,7 +149,7 @@ function RenderMap({
     var center = mapRef.center;
     var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
-    console.log(center);
+    console.log(center, center.lat(), center.lng());
     setBoundingBox({
       ne: { lat: ne.lat(), lng: ne.lng() },
       sw: { lat: sw.lat(), lng: sw.lng() },
@@ -199,12 +212,12 @@ function RenderMap({
                       id: `${result._id}-${v._id}`,
                     })
                   }
-                  onClick={(event) =>
-                    markerClickHandler(event, {
-                      ...result,
-                      id: `${result._id}-${v._id}`,
-                    })
-                  }
+                  // onClick={(event) =>
+                  //   markerClickHandler(event, {
+                  //     ...result,
+                  //     id: `${result._id}-${v._id}`,
+                  //   })
+                  // }
                   position={{
                     lat: v.location.latitude,
                     lng: v.location.longitude,
@@ -235,12 +248,16 @@ function RenderMap({
 
           {infoOpen && selectedPlace && (
             <InfoWindow
-              anchor={markerMap[selectedPlace.id]}
+              anchor={selectedMarker}
               onCloseClick={() => setInfoOpen(false)}
             >
-              <div style={{ width: 250 }}>
-                <EventGridCard event={selectedPlace} />
-              </div>
+              <>
+                <div>{selectedPlace.title}</div>
+                <div>{selectedPlace.displayInstanceDaterange}</div>
+                <div>{selectedPlace.venueNames}</div>
+              </>
+
+              {/* <EventInfoWindow event={selectedPlace} /> */}
             </InfoWindow>
           )}
         </GoogleMap>
