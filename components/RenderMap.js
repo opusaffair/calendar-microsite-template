@@ -109,19 +109,15 @@ function RenderMap({
     window.google.maps.event.addListener(marker, "spider_click", (e) => {
       markerClickHandler(e, place, marker);
     });
-    return setMarkerMap((prevState) => {
-      return { ...prevState, [place.id]: marker };
-    });
+    // return setMarkerMap((prevState) => {
+    //   return { ...prevState, [place.id]: marker };
+    // });
   };
 
   const markerClickHandler = (event, place, marker) => {
-    // Remember which place was clicked
-    setSelectedPlace(place);
+    setInfoOpen(false);
     setSelectedMarker(marker);
-    // Required so clicking a 2nd marker works as expected
-    if (infoOpen) {
-      setInfoOpen(false);
-    }
+    setSelectedPlace(place);
     setInfoOpen(true);
   };
 
@@ -149,7 +145,7 @@ function RenderMap({
     var center = mapRef.center;
     var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
-    console.log(center, center.lat(), center.lng());
+    // console.log(center, center.lat(), center.lng());
     setBoundingBox({
       ne: { lat: ne.lat(), lng: ne.lng() },
       sw: { lat: sw.lat(), lng: sw.lng() },
